@@ -4,6 +4,7 @@ import { Cliff, Shed, UtilityPoles } from './hero/Island'
 import { Desk, Character, Bench } from './hero/Workstation'
 import { Hotspots } from './hero/Hotspots'
 import { CloudField } from './hero/CloudField'
+import { IslandRig } from './hero/IslandRig'
 import { palette } from './hero/palette'
 
 function DuskSky() {
@@ -46,7 +47,7 @@ export function Scene() {
       <DuskSky />
       <hemisphereLight args={['#f0c9a0', '#2a2436', 0.5]} />
 
-      <group position={[0, -0.5, 0]}>
+      <IslandRig>
         <Cliff />
         <Shed />
         <UtilityPoles />
@@ -54,7 +55,7 @@ export function Scene() {
         <Character />
         <Bench />
         <Hotspots />
-      </group>
+      </IslandRig>
     </Canvas>
   )
 }

@@ -1,6 +1,7 @@
 import { useLenis } from './lib/useLenis'
 import { Scene } from './components/Scene'
 import { HeroNav } from './components/hero/HeroNav'
+import { BioCard } from './components/hero/BioCard'
 
 function Section({
   id,
@@ -36,10 +37,11 @@ function App() {
           <Scene />
         </div>
         <HeroNav />
+        <BioCard />
         <div className="pointer-events-none relative z-10 flex h-full flex-col items-start justify-end px-8 pb-20 sm:px-16">
           <p className="mb-3 text-sm tracking-wide text-white/70">developer &middot; biker &middot; builder</p>
-          <h1 className="max-w-xl text-5xl font-semibold leading-tight text-white sm:text-7xl">BatpodLabs</h1>
-          <p className="mt-3 max-w-sm text-sm text-white/60">Pick a side to explore — or keep scrolling.</p>
+          <h1 className="max-w-xl text-6xl font-semibold leading-none text-white/90 sm:text-8xl">BatpodLabs</h1>
+          <p className="mt-4 max-w-sm text-sm text-white/60">Pick a side above to explore — or keep scrolling.</p>
         </div>
       </section>
 
