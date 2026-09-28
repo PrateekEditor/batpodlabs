@@ -1,81 +1,35 @@
-import { useLenis } from './lib/useLenis'
-import { Scene } from './components/Scene'
-import { HeroNav } from './components/hero/HeroNav'
-import { BioCard } from './components/hero/BioCard'
+import { useEffect, useState } from 'react'
+import { TopNav } from './components/nav/TopNav'
+import { SplitScrollPage } from './components/scroll/SplitScrollPage'
+import { SECTIONS, type SectionDef } from './data/sections'
+import { CoderIcon } from './components/icons3d/CoderIcon'
+import { BikerIcon } from './components/icons3d/BikerIcon'
+import { EcommerceIcon } from './components/icons3d/EcommerceIcon'
+import { AboutIcon } from './components/icons3d/AboutIcon'
 
-function Section({
-  id,
-  eyebrow,
-  title,
-  children,
-  accent,
-}: {
-  id: string
-  eyebrow: string
-  title: string
-  children: React.ReactNode
-  accent: string
-}) {
-  return (
-    <section id={id} className="mx-auto max-w-3xl px-8 py-28 sm:px-0 scroll-mt-10">
-      <p className="mb-3 text-xs font-semibold tracking-[0.18em] uppercase" style={{ color: accent }}>
-        {eyebrow}
-      </p>
-      <h2 className="mb-5 text-3xl font-semibold sm:text-4xl">{title}</h2>
-      <div className="space-y-4 text-white/70 leading-relaxed">{children}</div>
-    </section>
-  )
+const ICONS: Record<SectionDef['id'], typeof CoderIcon> = {
+  coder: CoderIcon,
+  biker: BikerIcon,
+  ecommerce: EcommerceIcon,
+  about: AboutIcon,
 }
 
 function App() {
-  useLenis()
+  const [active, setActive] = useState<SectionDef['id']>('coder')
+  const section = SECTIONS.find((s) => s.id === active) ?? SECTIONS[0]
+  const Icon = ICONS[active]
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior })
+  }, [active])
 
   return (
-    <main>
-      <section className="relative h-screen w-full overflow-hidden">
-        <div className="absolute inset-0">
-          <Scene />
-        </div>
-        <HeroNav />
-        <BioCard />
-        <div className="pointer-events-none relative z-10 flex h-full flex-col items-start justify-end px-8 pb-20 sm:px-16">
-          <p className="mb-3 text-sm tracking-wide text-white/70">developer &middot; biker &middot; builder</p>
-          <h1 className="max-w-xl text-6xl font-semibold leading-none text-white/90 sm:text-8xl">BatpodLabs</h1>
-          <p className="mt-4 max-w-sm text-sm text-white/60">Pick a side above to explore — or keep scrolling.</p>
-        </div>
-      </section>
-
-      <Section id="coder" eyebrow="01 — Build" title="Coder" accent="#55ac9f">
-        <p>
-          Placeholder copy — this becomes the developer portfolio: Salesforce work, the Real Field Tracker package,
-          side projects, and the stack behind this very site.
-        </p>
-        <p>Fake project cards, a skills strip, and links to GitHub go here once the content ticket is picked up.</p>
-      </Section>
-
-      <Section id="biker" eyebrow="02 — Ride" title="Biker" accent="#d67f74">
-        <p>
-          Placeholder copy — the motovlog journey. Ride logs, the Batpod itself, routes, and video content will
-          live in this section.
-        </p>
-        <p>Eventually pulls in real content once the Batpod social project has something to feed it.</p>
-      </Section>
-
-      <Section id="ecommerce" eyebrow="03 — Shop" title="E-Commerce" accent="#d6c23d">
-        <p>
-          Placeholder copy — products to buy later: merch, gear, or whatever comes out of the builder side of
-          things. Parked until there's something real to sell.
-        </p>
-        <p>Checkout, product schema, and payment-form security tickets are already parked for when this goes live.</p>
-      </Section>
-
-      <Section id="about" eyebrow="04 — Who" title="About Me" accent="#9186d9">
-        <p>
-          Placeholder copy — the short version of who's behind BatpodLabs: coder, biker, AI enthusiast, and
-          whatever else earns a mention.
-        </p>
-        <p>Real bio copy comes once Fix Things settles on consistent language across profiles.</p>
-      </Section>
+    <main className="relative">
+      <TopNav active={active} onChange={setActive} />
+      <div className="pointer-events-none fixed left-1/2 top-24 z-20 -translate-x-1/2 text-center sm:top-28">
+        <p className="text-xs tracking-[0.2em] text-white/40 uppercase">BatpodLabs</p>
+      </div>
+      <SplitScrollPage key={section.id} section={section} Icon={Icon} />
     </main>
   )
 }
