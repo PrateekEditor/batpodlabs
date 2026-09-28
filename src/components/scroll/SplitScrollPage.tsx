@@ -66,7 +66,15 @@ export function SplitScrollPage({
           </div>
         ))}
       </div>
-      <div className="order-1 sticky top-0 h-[45vh] md:order-2 md:h-screen">
+      <div className="order-1 sticky top-0 h-[45vh] overflow-hidden md:order-2 md:h-screen md:border-l md:border-white/[0.06]">
+        {/* Ambient accent glow — a flat dark panel with nothing but a small icon
+            reads as empty; a soft radial tint gives the section a color identity. */}
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background: `radial-gradient(ellipse 60% 50% at 65% 45%, ${section.accent}26, transparent 70%)`,
+          }}
+        />
         <IconCanvas Icon={Icon} poseRef={poseRef} accent={section.accent} />
       </div>
     </div>
