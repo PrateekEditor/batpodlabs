@@ -1,14 +1,18 @@
 import { useEffect, useRef, useState, type ComponentType } from 'react'
-import { animate } from 'animejs'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import type { SectionDef } from '../../data/sections'
 import type { IconProps, IconPose } from '../icons3d/types'
 import { createPose } from '../icons3d/types'
 import { IconCanvas } from '../icons3d/IconCanvas'
 
+gsap.registerPlugin(ScrollTrigger)
+
 /**
- * Left column: stacked text steps tracked via IntersectionObserver.
- * Right column: a sticky 3D icon canvas whose pose is tweened by anime.js
- * whenever the active step changes, so the model visibly reacts to scroll.
+ * Left column: stacked text steps, highlighted discretely as you cross them.
+ * Right column: a sticky 3D icon canvas whose pose is scrubbed continuously
+ * by a GSAP ScrollTrigger tied to scroll progress through this section,
+ * rather than jumping between fixed states.
  */
 export function SplitScrollPage({
   section,
@@ -19,46 +23,42 @@ export function SplitScrollPage({
 }) {
   const poseRef = useRef<IconPose>(createPose())
   const [activeStep, setActiveStep] = useState(0)
-  const stepRefs = useRef<(HTMLDivElement | null)[]>([])
+  const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return
-          const idx = stepRefs.current.findIndex((el) => el === entry.target)
-          if (idx !== -1) setActiveStep(idx)
-        })
-      },
-      { threshold: 0.6 }
-    )
-    stepRefs.current.forEach((el) => el && observer.observe(el))
-    return () => observer.disconnect()
-  }, [section.id])
+    const totalSteps = section.steps.length
+    const amplitude = Math.PI / 1.7
 
-  useEffect(() => {
-    const totalSteps = Math.max(section.steps.length - 1, 1)
-    animate(poseRef.current, {
-      rotationY: (activeStep / totalSteps - 0.5) * (Math.PI / 1.7),
-      bounce: 1,
-      duration: 650,
-      ease: 'outElastic(1, .6)',
-      onComplete: () => {
-        animate(poseRef.current, { bounce: 0, duration: 400, ease: 'outQuad' })
-      },
-    })
-  }, [activeStep, section.steps.length])
+    const ctx = gsap.context(() => {
+      const trigger = ScrollTrigger.create({
+        trigger: containerRef.current,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 0.5,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          const progress = self.progress
+          poseRef.current.rotationY = (progress - 0.5) * amplitude
+          poseRef.current.bounce = Math.min(1, Math.abs(self.getVelocity()) / 2500)
+          const idx = Math.min(totalSteps - 1, Math.floor(progress * totalSteps))
+          setActiveStep((prev) => (prev === idx ? prev : idx))
+        },
+      })
+      // Layout (esp. the R3F canvas) can settle a frame late; refresh once it has.
+      requestAnimationFrame(() => ScrollTrigger.refresh())
+      return () => trigger.kill()
+    }, containerRef)
+
+    return () => ctx.revert()
+  }, [section.id, section.steps.length])
 
   return (
-    <div className="grid min-h-screen grid-cols-1 md:grid-cols-2">
+    <div ref={containerRef} className="grid min-h-screen grid-cols-1 md:grid-cols-2">
       <div className="order-2 flex flex-col gap-[30vh] px-6 py-[20vh] sm:px-10 md:order-1 md:gap-[40vh] md:px-16 md:py-[30vh]">
         {section.steps.map((step, i) => (
           <div
             key={step.title}
-            ref={(el) => {
-              stepRefs.current[i] = el
-            }}
-            className="max-w-md transition-opacity duration-500"
+            className="max-w-md transition-opacity duration-300"
             style={{ opacity: activeStep === i ? 1 : 0.35 }}
           >
             <h2 className="text-3xl font-semibold text-white sm:text-4xl">{step.title}</h2>

@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { TopNav } from './components/nav/TopNav'
 import { SplitScrollPage } from './components/scroll/SplitScrollPage'
 import { SECTIONS, type SectionDef } from './data/sections'
+import { useLenis } from './lib/useLenis'
+import { getLenis } from './lib/lenis'
 import { CoderIcon } from './components/icons3d/CoderIcon'
 import { BikerIcon } from './components/icons3d/BikerIcon'
 import { EcommerceIcon } from './components/icons3d/EcommerceIcon'
@@ -15,12 +17,15 @@ const ICONS: Record<SectionDef['id'], typeof CoderIcon> = {
 }
 
 function App() {
+  useLenis()
   const [active, setActive] = useState<SectionDef['id']>('coder')
   const section = SECTIONS.find((s) => s.id === active) ?? SECTIONS[0]
   const Icon = ICONS[active]
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior })
+    const lenis = getLenis()
+    if (lenis) lenis.scrollTo(0, { immediate: true })
+    else window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior })
   }, [active])
 
   return (
