@@ -1,40 +1,31 @@
-import { useEffect, useState } from 'react'
-import { TopNav } from './components/nav/TopNav'
-import { SplitScrollPage } from './components/scroll/SplitScrollPage'
-import { SECTIONS, type SectionDef } from './data/sections'
 import { useLenis } from './lib/useLenis'
-import { getLenis } from './lib/lenis'
-import { CoderIcon } from './components/icons3d/CoderIcon'
-import { BikerIcon } from './components/icons3d/BikerIcon'
-import { EcommerceIcon } from './components/icons3d/EcommerceIcon'
-import { AboutIcon } from './components/icons3d/AboutIcon'
-
-const ICONS: Record<SectionDef['id'], typeof CoderIcon> = {
-  coder: CoderIcon,
-  biker: BikerIcon,
-  ecommerce: EcommerceIcon,
-  about: AboutIcon,
-}
+import { useSectionTheme } from './lib/useSectionTheme'
+import { HeroSection } from './sections/HeroSection'
+import { StandUpSection } from './sections/StandUpSection'
+import { LinksSection } from './sections/LinksSection'
+import { BikerSection } from './sections/BikerSection'
+import { ProjectsSection } from './sections/ProjectsSection'
 
 function App() {
   useLenis()
-  const [active, setActive] = useState<SectionDef['id']>('coder')
-  const section = SECTIONS.find((s) => s.id === active) ?? SECTIONS[0]
-  const Icon = ICONS[active]
-
-  useEffect(() => {
-    const lenis = getLenis()
-    if (lenis) lenis.scrollTo(0, { immediate: true })
-    else window.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior })
-  }, [active])
+  useSectionTheme('theme-backdrop')
 
   return (
     <main className="relative">
-      <TopNav active={active} onChange={setActive} />
-      <div className="pointer-events-none fixed left-1/2 top-24 z-20 -translate-x-1/2 text-center sm:top-28">
-        <p className="text-xs tracking-[0.2em] text-white/40 uppercase">BatpodLabs</p>
+      <div id="theme-backdrop" className="fixed inset-0 -z-10" style={{ background: '#f2e9d8' }} />
+
+      <div
+        className="pointer-events-none fixed left-6 top-6 z-20 text-xs font-semibold tracking-[0.2em] text-white opacity-60 sm:left-8 sm:top-8"
+        style={{ mixBlendMode: 'difference' }}
+      >
+        BATPODLABS
       </div>
-      <SplitScrollPage key={section.id} section={section} Icon={Icon} />
+
+      <HeroSection />
+      <StandUpSection />
+      <LinksSection />
+      <BikerSection />
+      <ProjectsSection />
     </main>
   )
 }
