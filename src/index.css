@@ -197,6 +197,25 @@ body::before {
   animation: code-scroll 6s linear infinite;
 }
 
+/* Notice-board certification badges — hover or keyboard-focus a badge to
+   pop its name up above it. */
+.cert-badge {
+  cursor: default;
+}
+.cert-tooltip {
+  opacity: 0;
+  pointer-events: none;
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  transform: translateY(4px) scale(0.92);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.cert-badge:hover .cert-tooltip,
+.cert-badge:focus-visible .cert-tooltip {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .character-float,
   .glint,
@@ -211,6 +230,9 @@ body::before {
   .steam-line,
   .code-scroll {
     animation: none;
+  }
+  .cert-tooltip {
+    transition: none;
   }
 }
 

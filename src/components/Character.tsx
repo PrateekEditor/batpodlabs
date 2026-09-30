@@ -1,22 +1,94 @@
 import { useEffect, useRef, useState, type KeyboardEvent, type MouseEvent } from 'react'
 import { isMuted, playBotBeep, subscribeMuted, toggleMuted, unlockAudio } from '../lib/audio'
+import { CERTIFICATIONS } from '../data/skills'
 
 type Action = 'idle' | 'idea' | 'note' | 'drink'
 const ACTIONS: Action[] = ['idea', 'note', 'drink']
 
+type BadgeIcon = 'check' | 'spark' | 'code' | 'tag' | 'gear' | 'chart'
+
+// Original badge medallions (not a copy of Salesforce's actual trademarked
+// certification badge artwork) — a colored disc + ribbon tail per
+// certification, each with its own simple abstract icon. Names come from
+// the same CERTIFICATIONS list as the Skills section, with the common
+// "Salesforce Certified" prefix dropped for the on-hover label.
+const CERT_ICONS: BadgeIcon[] = ['check', 'spark', 'code', 'tag', 'gear', 'chart']
+const CERT_COLORS = ['#2D7FF9', '#8B5CF6', '#3FA66B', '#E8862D', '#0D1640', '#12A6A1']
+const CERT_BADGES = CERTIFICATIONS.map((name, i) => ({
+  label: name.replace('Salesforce Certified ', ''),
+  color: CERT_COLORS[i % CERT_COLORS.length],
+  icon: CERT_ICONS[i % CERT_ICONS.length],
+}))
+
+function tooltipWidth(text: string) {
+  return Math.max(56, text.length * 5.2 + 18)
+}
+
+function CertIcon({ icon }: { icon: BadgeIcon }) {
+  switch (icon) {
+    case 'check':
+      return <path d="M-5 0 L-1.5 4 L6 -5" stroke="#fff" strokeWidth="2.2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    case 'spark':
+      return (
+        <g stroke="#fff" strokeWidth="1.8" strokeLinecap="round">
+          <line x1="0" y1="-6.5" x2="0" y2="6.5" />
+          <line x1="-6.5" y1="0" x2="6.5" y2="0" />
+          <line x1="-4.4" y1="-4.4" x2="4.4" y2="4.4" />
+          <line x1="-4.4" y1="4.4" x2="4.4" y2="-4.4" />
+        </g>
+      )
+    case 'code':
+      return (
+        <g fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M-3 -5 L-8 0 L-3 5" />
+          <path d="M3 -5 L8 0 L3 5" />
+        </g>
+      )
+    case 'tag':
+      return (
+        <g>
+          <path d="M-7 -1 L1 -8 L8 -1 L1 8 Z" fill="none" stroke="#fff" strokeWidth="1.7" strokeLinejoin="round" />
+          <circle cx="-2.5" cy="-3.5" r="1.3" fill="#fff" />
+        </g>
+      )
+    case 'gear':
+      return (
+        <g stroke="#fff" strokeWidth="1.6" strokeLinecap="round">
+          <circle r="4" fill="none" />
+          <line x1="0" y1="-7.5" x2="0" y2="-5.5" />
+          <line x1="0" y1="5.5" x2="0" y2="7.5" />
+          <line x1="-7.5" y1="0" x2="-5.5" y2="0" />
+          <line x1="7.5" y1="0" x2="5.5" y2="0" />
+          <line x1="-5.3" y1="-5.3" x2="-3.9" y2="-3.9" />
+          <line x1="5.3" y1="5.3" x2="3.9" y2="3.9" />
+          <line x1="-5.3" y1="5.3" x2="-3.9" y2="3.9" />
+          <line x1="5.3" y1="-5.3" x2="3.9" y2="-3.9" />
+        </g>
+      )
+    case 'chart':
+      return (
+        <g stroke="#fff" strokeWidth="1.8" fill="none" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="-6,4 -2,-1 1,2 6,-6" />
+          <polyline points="2,-6 6,-6 6,-2" />
+        </g>
+      )
+    default:
+      return null
+  }
+}
+
 /**
- * Original flat-vector desk scene — Prateek (back/three-quarter view, same
- * black hoodie + red speed-stripe mark as before) seated in a gaming chair
- * between two monitors, hands animating on the keyboard. The left screen
- * shows a little chat conversation, the right screen has code quietly
- * auto-scrolling. A wall-mounted notice board carries an original cloud-mark
- * sticky (nodding to Salesforce, not a traced logo) and an original
- * friendly-bot sticky (nodding to Agentforce, not Salesforce's actual
- * mascot artwork), plus a small original robot figurine on the desk that
- * beeps and nudges a random idea/note/coffee-break animation when tapped —
- * the same animations also fire on their own at random intervals, like the
- * ambient typing loop. Hand-built from primitives — not 3D, not a traced
- * photo or a copy of any real product's mascot/logo artwork.
+ * Original flat-vector desk scene — Prateek (back/three-quarter view, black
+ * hoodie + red speed-stripe mark) seated between two monitors, hands
+ * animating on the keyboard. The left screen shows a little chat
+ * conversation, the right screen has code quietly auto-scrolling. A
+ * wall-mounted notice board carries original certification-badge medallions
+ * (not a copy of Salesforce's actual badge artwork) — hover or focus one to
+ * see its name. A small original robot figurine on the desk beeps and
+ * nudges a random idea/note/coffee-break animation when tapped — the same
+ * animations also fire on their own at random intervals, like the ambient
+ * typing loop. Hand-built from primitives — not 3D, not a traced photo or a
+ * copy of any real product's mascot/logo artwork.
  */
 export function Character() {
   const [muted, setMutedState] = useState(isMuted)
@@ -110,43 +182,40 @@ export function Character() {
 
         {/* ===== shelf + notice board (wall) — sit fully above the monitors, y <= 138 ===== */}
         <g>
-          {/* notice board */}
+          {/* notice board — certification badges, hover (or focus) any one to see its name */}
           <rect x="384" y="8" width="150" height="110" rx="10" fill="#E4D9BE" stroke="#C9A06B" strokeWidth="3" />
 
-          {/* sticky: cloud mark (Salesforce-nod, original icon) */}
-          <g transform="translate(396 20) rotate(-6)">
-            <rect width="44" height="36" rx="3" fill="#EAF3FF" />
-            <g transform="translate(8 9)">
-              <circle cx="6" cy="9" r="6.5" fill="#2D7FF9" />
-              <circle cx="15" cy="5" r="8" fill="#2D7FF9" />
-              <circle cx="24" cy="10" r="5.5" fill="#2D7FF9" />
-              <rect x="1" y="10" width="28" height="7" rx="3.5" fill="#2D7FF9" />
-            </g>
-          </g>
-          <circle cx="418" cy="18" r="3.6" fill="#E4372B" />
-
-          {/* sticky: friendly bot (Agentforce-nod, original character) */}
-          <g transform="translate(452 22) rotate(5)">
-            <rect width="42" height="38" rx="3" fill="#FFF3E6" />
-            <g transform="translate(5 6)">
-              <line x1="16" y1="0" x2="16" y2="5" stroke="#0D1640" strokeWidth="2" strokeLinecap="round" />
-              <circle cx="16" cy="2" r="2" fill="#E8862D" />
-              <rect x="4" y="5" width="24" height="19" rx="7" fill="#0D1640" />
-              <circle cx="11" cy="14" r="2.4" fill="#EAF3FF" />
-              <circle cx="21" cy="14" r="2.4" fill="#EAF3FF" />
-              <path d="M11 19 q5 4 10 0" stroke="#EAF3FF" strokeWidth="1.6" strokeLinecap="round" fill="none" />
-            </g>
-          </g>
-          <circle cx="473" cy="20" r="3.6" fill="#0D1640" />
-
-          {/* sticky: notes lines */}
-          <g transform="translate(400 62) rotate(-3)">
-            <rect width="86" height="38" rx="3" fill="#FFFBEF" />
-            <line x1="7" y1="10" x2="64" y2="10" stroke="#C9A06B" strokeWidth="3" strokeLinecap="round" />
-            <line x1="7" y1="19" x2="54" y2="19" stroke="#C9A06B" strokeWidth="3" strokeLinecap="round" />
-            <line x1="7" y1="28" x2="60" y2="28" stroke="#C9A06B" strokeWidth="3" strokeLinecap="round" />
-          </g>
-          <circle cx="406" cy="60" r="3.6" fill="#E8862D" />
+          {CERT_BADGES.map((cert, i) => {
+            const col = i % 3
+            const row = Math.floor(i / 3)
+            const cx = 414 + col * 45
+            const cy = 40 + row * 42
+            const tw = tooltipWidth(cert.label)
+            return (
+              <g key={cert.label} className="cert-badge" tabIndex={0} role="img" aria-label={`${cert.label} certification`}>
+                <g transform={`translate(${cx} ${cy})`}>
+                  <path d="M-9 13 L-13 24 L-4 18 L4 18 L13 24 L9 13 Z" fill={cert.color} opacity="0.85" />
+                  <circle r="15" fill="#fff" stroke={cert.color} strokeWidth="2.2" />
+                  <circle r="11.5" fill={cert.color} />
+                  <CertIcon icon={cert.icon} />
+                </g>
+                {/* positioning lives on this outer g (plain SVG attribute
+                    transform); the inner .cert-tooltip g owns the CSS
+                    opacity/transform for the hover pop — CSS transform would
+                    otherwise replace the attribute transform outright if
+                    they were on the same element */}
+                <g transform={`translate(${cx} ${cy - 22})`}>
+                  <g className="cert-tooltip">
+                    <rect x={-tw / 2} y="-18" width={tw} height="18" rx="5" fill="#0D1640" />
+                    <path d="M-4 0 L4 0 L0 5 Z" fill="#0D1640" />
+                    <text x="0" y="-5.5" textAnchor="middle" fontSize="7.5" fill="#F2E9D8">
+                      {cert.label}
+                    </text>
+                  </g>
+                </g>
+              </g>
+            )
+          })}
 
           {/* shelf, flush above the monitor tops */}
           <rect x="384" y="124" width="150" height="12" rx="5" fill="#C9A06B" />
@@ -302,16 +371,6 @@ export function Character() {
           <path d="M23 40 q-16 -10 -18 -30 q16 4 20 18 q3 -16 16 -20 q0 18 -10 27 q10 -4 16 2 q-10 8 -24 3 z" fill="#5C8A4E" />
         </g>
 
-        {/* ===== gaming chair back — navy with amber piping, sitting behind
-             Prateek so its bolsters peek out past the hoodie on both sides.
-             Its top edge stays below the head so nothing pokes above him. ===== */}
-        <g transform="translate(300 240)">
-          <rect x="-108" y="-95" width="216" height="155" rx="34" fill="#16213e" />
-          <rect x="-108" y="-95" width="30" height="155" rx="18" fill="#0D1640" />
-          <rect x="78" y="-95" width="30" height="155" rx="18" fill="#0D1640" />
-          <rect x="-7" y="-90" width="14" height="145" rx="7" fill="#E8862D" opacity="0.9" />
-        </g>
-
         {/* keyboard, centered on the desk top */}
         <rect x="262" y="296" width="76" height="16" rx="4" fill="#1B1B1B" />
         <g fill="#3A3A3A">
@@ -402,17 +461,6 @@ export function Character() {
           )}
         </g>
 
-        {/* gaming chair base — gas cylinder + wide wheeled skid, peeking below the desk front */}
-        <g transform="translate(300 396)">
-          <rect x="-8" y="0" width="16" height="26" rx="6" fill="#2A2A2A" />
-          <path d="M-50 26 q50 14 100 0 q4 10 -6 14 q-44 12 -88 0 q-10 -4 -6 -14 z" fill="#1B1B1F" />
-          <circle cx="-46" cy="42" r="6" fill="#0a0a0a" />
-          <circle cx="-22" cy="48" r="6" fill="#0a0a0a" />
-          <circle cx="0" cy="50" r="6" fill="#0a0a0a" />
-          <circle cx="22" cy="48" r="6" fill="#0a0a0a" />
-          <circle cx="46" cy="42" r="6" fill="#0a0a0a" />
-        </g>
-        <ellipse cx="300" cy="458" rx="60" ry="8" fill="#0D1640" opacity="0.12" />
       </svg>
     </div>
   )
