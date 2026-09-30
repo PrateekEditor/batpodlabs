@@ -161,6 +161,42 @@ body::before {
   animation: note-write 1.3s ease-out 0.3s both;
 }
 
+/* Coffee-break moment — mug pops by the hand, steam rises */
+@keyframes pop-drink {
+  0% { opacity: 0; transform: translate(255px, 300px) scale(0.6); }
+  15% { opacity: 1; transform: translate(255px, 288px) scale(1); }
+  85% { opacity: 1; }
+  100% { opacity: 0; transform: translate(255px, 284px) scale(0.95); }
+}
+.pop-drink {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pop-drink 2s ease-out forwards;
+}
+
+@keyframes steam-rise {
+  0% { opacity: 0; transform: translateY(3px); }
+  30% { opacity: 0.85; }
+  100% { opacity: 0; transform: translateY(-9px); }
+}
+.steam-line {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: steam-rise 1.6s ease-in-out infinite;
+}
+.steam-line:nth-of-type(2) {
+  animation-delay: 0.35s;
+}
+
+/* Right monitor — quietly auto-scrolling code, clipped to the screen */
+@keyframes code-scroll {
+  from { transform: translateY(0); }
+  to { transform: translateY(-82px); }
+}
+.code-scroll {
+  animation: code-scroll 6s linear infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .character-float,
   .glint,
@@ -170,7 +206,10 @@ body::before {
   .code-lines rect,
   .pop-idea,
   .pop-note,
-  .note-line {
+  .pop-drink,
+  .note-line,
+  .steam-line,
+  .code-scroll {
     animation: none;
   }
 }

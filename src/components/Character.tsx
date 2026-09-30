@@ -1,20 +1,22 @@
 import { useEffect, useRef, useState, type KeyboardEvent, type MouseEvent } from 'react'
 import { isMuted, playBotBeep, subscribeMuted, toggleMuted, unlockAudio } from '../lib/audio'
 
-type Action = 'idle' | 'idea' | 'note'
+type Action = 'idle' | 'idea' | 'note' | 'drink'
+const ACTIONS: Action[] = ['idea', 'note', 'drink']
 
 /**
  * Original flat-vector desk scene — Prateek (back/three-quarter view, same
- * black hoodie + red speed-stripe mark as before) seated between two
- * monitors, hands animating on the keyboard. A wall-mounted notice board
- * carries an original cloud-mark sticky (nodding to Salesforce, not a
- * traced logo) and an original friendly-bot sticky (nodding to Agentforce,
- * not Salesforce's actual mascot artwork), plus a small original robot
- * figurine on the desk that beeps and nudges a random "idea" or "note"
- * animation when tapped — the same animations also fire on their own at
- * random intervals, like the ambient typing loop. Hand-built from
- * primitives — not 3D, not a traced photo or a copy of any real product's
- * mascot/logo artwork.
+ * black hoodie + red speed-stripe mark as before) seated in a gaming chair
+ * between two monitors, hands animating on the keyboard. The left screen
+ * shows a little chat conversation, the right screen has code quietly
+ * auto-scrolling. A wall-mounted notice board carries an original cloud-mark
+ * sticky (nodding to Salesforce, not a traced logo) and an original
+ * friendly-bot sticky (nodding to Agentforce, not Salesforce's actual
+ * mascot artwork), plus a small original robot figurine on the desk that
+ * beeps and nudges a random idea/note/coffee-break animation when tapped —
+ * the same animations also fire on their own at random intervals, like the
+ * ambient typing loop. Hand-built from primitives — not 3D, not a traced
+ * photo or a copy of any real product's mascot/logo artwork.
  */
 export function Character() {
   const [muted, setMutedState] = useState(isMuted)
@@ -28,13 +30,13 @@ export function Character() {
     actionRef.current = action
   }, [action])
 
-  // Random idle moments — fires on its own every so often, independent of
-  // taps, so the scene never looks frozen even if no one clicks anything.
+  // Random idle moments — fires on its own every few seconds, independent
+  // of taps, so the scene never looks frozen even if no one clicks anything.
   useEffect(() => {
     let stopped = false
     let timer: number
     const loop = () => {
-      const delay = 5000 + Math.random() * 6000
+      const delay = 3000 + Math.random() * 2000
       timer = window.setTimeout(() => {
         if (!stopped && actionRef.current === 'idle') triggerAction(false)
         if (!stopped) loop()
@@ -60,7 +62,7 @@ export function Character() {
       unlockAudio()
       playBotBeep()
     }
-    const next: Action = Math.random() < 0.5 ? 'idea' : 'note'
+    const next = ACTIONS[Math.floor(Math.random() * ACTIONS.length)]
     setAction(next)
     if (actionTimer.current) window.clearTimeout(actionTimer.current)
     actionTimer.current = window.setTimeout(() => setAction('idle'), 2000)
@@ -71,6 +73,8 @@ export function Character() {
     toggleMuted()
     e.currentTarget.blur()
   }
+
+  const handsPaused = action === 'note' || action === 'drink'
 
   return (
     <div className="character-float relative mx-auto w-full max-w-[460px] sm:max-w-[540px]">
@@ -86,7 +90,7 @@ export function Character() {
         style={{ background: 'radial-gradient(circle, #2D7FF9 0%, transparent 70%)' }}
       />
 
-      <svg viewBox="0 0 560 460" className="relative z-10 h-auto w-full" role="img" aria-label="Illustration of Prateek Patel at his desk, typing between two monitors">
+      <svg viewBox="0 0 590 480" className="relative z-10 h-auto w-full" role="img" aria-label="Illustration of Prateek Patel at his desk, chatting on one screen and coding on the other">
         <defs>
           <linearGradient id="bezel" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0" stopColor="#262626" />
@@ -96,10 +100,13 @@ export function Character() {
             <stop offset="0" stopColor="#16224f" />
             <stop offset="1" stopColor="#0d1640" />
           </linearGradient>
+          <clipPath id="codeClipRight">
+            <rect x="430" y="150" width="130" height="82" />
+          </clipPath>
         </defs>
 
-        {/* ground shadow */}
-        <ellipse cx="300" cy="444" rx="200" ry="12" fill="#0D1640" opacity="0.08" />
+        {/* ground shadow, under the desk legs */}
+        <ellipse cx="300" cy="434" rx="220" ry="12" fill="#0D1640" opacity="0.07" />
 
         {/* ===== shelf + notice board (wall) — sit fully above the monitors, y <= 138 ===== */}
         <g>
@@ -152,50 +159,71 @@ export function Character() {
 
         {/* ===== monitors — angled slightly inward toward Prateek, with a
              dropped shadow and a gradient bezel, for a bit of 3D pop ===== */}
-        {/* left screen */}
+        {/* left screen — a little chat conversation on the go */}
         <g transform="rotate(3 165 191)">
           <ellipse cx="103" cy="271" rx="28" ry="7" fill="#0D1640" opacity="0.16" />
           <rect x="94" y="236" width="18" height="30" rx="4" fill="#8A8477" />
           <rect x="90" y="140" width="150" height="102" rx="10" fill="url(#bezel)" />
           <rect x="91" y="141" width="148" height="4" rx="2" fill="#3a3a3a" opacity="0.6" />
           <rect x="100" y="150" width="130" height="82" rx="4" fill="url(#screenGlow)" />
-          <g className="code-lines" opacity="0.9">
-            <rect x="108" y="160" width="60" height="6" rx="3" fill="#E8862D" />
-            <rect x="108" y="172" width="90" height="6" rx="3" fill="#5fd8ff" />
-            <rect x="108" y="184" width="70" height="6" rx="3" fill="#8fb6ff" />
-            <rect x="120" y="196" width="76" height="6" rx="3" fill="#E4372B" />
-            <rect x="108" y="208" width="50" height="6" rx="3" fill="#5fd8ff" />
-            <rect x="108" y="220" width="84" height="6" rx="3" fill="#8fb6ff" />
+          <g opacity="0.95">
+            <rect x="108" y="160" width="60" height="14" rx="7" fill="#33427a" />
+            <rect x="150" y="180" width="66" height="14" rx="7" fill="#2D7FF9" />
+            <rect x="108" y="200" width="50" height="14" rx="7" fill="#33427a" />
+            <circle className="glint" cx="150" cy="222" r="2.6" fill="#8fb6ff" />
+            <circle className="glint" cx="159" cy="222" r="2.6" fill="#8fb6ff" />
+            <circle className="glint" cx="168" cy="222" r="2.6" fill="#8fb6ff" />
+          </g>
+          {/* floating chat-bubble icon, tucked over the top-left corner */}
+          <g transform="translate(70 110)">
+            <rect width="36" height="26" rx="9" fill="#2D7FF9" />
+            <path d="M8 26 l0 9 l11 -9 z" fill="#2D7FF9" />
+            <circle cx="10" cy="13" r="2.3" fill="#EAF3FF" />
+            <circle cx="18" cy="13" r="2.3" fill="#EAF3FF" />
+            <circle cx="26" cy="13" r="2.3" fill="#EAF3FF" />
           </g>
         </g>
 
-        {/* right screen */}
+        {/* right screen — code quietly auto-scrolling, clipped to the screen */}
         <g transform="rotate(-3 495 191)">
           <ellipse cx="457" cy="271" rx="28" ry="7" fill="#0D1640" opacity="0.16" />
           <rect x="448" y="236" width="18" height="30" rx="4" fill="#8A8477" />
           <rect x="420" y="140" width="150" height="102" rx="10" fill="url(#bezel)" />
           <rect x="421" y="141" width="148" height="4" rx="2" fill="#3a3a3a" opacity="0.6" />
           <rect x="430" y="150" width="130" height="82" rx="4" fill="url(#screenGlow)" />
-          <g className="code-lines" opacity="0.9">
-            <rect x="438" y="160" width="80" height="6" rx="3" fill="#5fd8ff" />
-            <rect x="438" y="172" width="56" height="6" rx="3" fill="#E8862D" />
-            <rect x="450" y="184" width="96" height="6" rx="3" fill="#8fb6ff" />
-            <rect x="438" y="196" width="66" height="6" rx="3" fill="#5fd8ff" />
-            <rect x="438" y="208" width="88" height="6" rx="3" fill="#E4372B" />
-            <rect x="438" y="220" width="46" height="6" rx="3" fill="#8fb6ff" />
+          <g clipPath="url(#codeClipRight)">
+            <g className="code-scroll">
+              <g transform="translate(438 160)">
+                <rect width="80" height="6" rx="3" fill="#5fd8ff" />
+                <rect y="14" width="56" height="6" rx="3" fill="#E8862D" />
+                <rect y="28" width="96" height="6" rx="3" fill="#8fb6ff" />
+                <rect y="42" width="66" height="6" rx="3" fill="#5fd8ff" />
+                <rect y="56" width="88" height="6" rx="3" fill="#E4372B" />
+                <rect y="70" width="46" height="6" rx="3" fill="#8fb6ff" />
+              </g>
+              <g transform="translate(438 242)">
+                <rect width="80" height="6" rx="3" fill="#5fd8ff" />
+                <rect y="14" width="56" height="6" rx="3" fill="#E8862D" />
+                <rect y="28" width="96" height="6" rx="3" fill="#8fb6ff" />
+                <rect y="42" width="66" height="6" rx="3" fill="#5fd8ff" />
+                <rect y="56" width="88" height="6" rx="3" fill="#E4372B" />
+                <rect y="70" width="46" height="6" rx="3" fill="#8fb6ff" />
+              </g>
+            </g>
           </g>
         </g>
 
         {/* ===== desk ===== */}
-        <path d="M30 282 L530 282 L556 304 L4 304 Z" fill="#E0C79C" />
-        <rect x="20" y="304" width="520" height="92" rx="10" fill="#C9A06B" />
-        <rect x="20" y="304" width="520" height="14" fill="#D4AE7C" />
+        <path d="M30 282 L560 282 L586 304 L4 304 Z" fill="#E0C79C" />
+        <rect x="20" y="304" width="550" height="92" rx="10" fill="#C9A06B" />
+        <rect x="20" y="304" width="550" height="14" fill="#D4AE7C" />
         <rect x="46" y="396" width="16" height="36" rx="4" fill="#A77E4F" />
-        <rect x="498" y="396" width="16" height="36" rx="4" fill="#A77E4F" />
+        <rect x="528" y="396" width="16" height="36" rx="4" fill="#A77E4F" />
 
-        {/* amplifiers — desk corners, beside each monitor. Tap either to mute/unmute all sound. */}
+        {/* amplifiers — tucked right beside each monitor's foot, as close as the
+            desk items allow. Tap either to mute/unmute all sound. */}
         <g
-          transform="translate(30 300)"
+          transform="translate(70 296)"
           onClick={handleAmpTap}
           className="cursor-pointer"
           role="button"
@@ -213,7 +241,7 @@ export function Character() {
           {muted && <line x1="-2" y1="22" x2="24" y2="-2" stroke="#E4372B" strokeWidth="2" strokeLinecap="round" />}
         </g>
         <g
-          transform="translate(512 300)"
+          transform="translate(466 300)"
           onClick={handleAmpTap}
           className="cursor-pointer"
           role="button"
@@ -239,9 +267,9 @@ export function Character() {
           <line x1="24" y1="18" x2="27" y2="-4" stroke="#C2C6CF" strokeWidth="4" strokeLinecap="round" />
         </g>
 
-        {/* original robot figurine — replaces a desk-toy penguin. Tap it: beep + a random idea/note moment. */}
+        {/* original robot figurine — replaces a desk-toy penguin. Tap it: beep + a random idea/note/coffee moment. */}
         <g
-          transform="translate(60 268)"
+          transform="translate(20 266)"
           onClick={(e) => {
             triggerAction(true)
             e.currentTarget.blur()
@@ -269,9 +297,19 @@ export function Character() {
         </g>
 
         {/* small plant, desk right */}
-        <g transform="translate(470 262)">
+        <g transform="translate(512 248)">
           <path d="M8 40 h30 l-4 14 h-22 z" fill="#EAF3FF" stroke="#C9A06B" strokeWidth="2" />
           <path d="M23 40 q-16 -10 -18 -30 q16 4 20 18 q3 -16 16 -20 q0 18 -10 27 q10 -4 16 2 q-10 8 -24 3 z" fill="#5C8A4E" />
+        </g>
+
+        {/* ===== gaming chair back — navy with amber piping, sitting behind
+             Prateek so its bolsters peek out past the hoodie on both sides.
+             Its top edge stays below the head so nothing pokes above him. ===== */}
+        <g transform="translate(300 240)">
+          <rect x="-108" y="-95" width="216" height="155" rx="34" fill="#16213e" />
+          <rect x="-108" y="-95" width="30" height="155" rx="18" fill="#0D1640" />
+          <rect x="78" y="-95" width="30" height="155" rx="18" fill="#0D1640" />
+          <rect x="-7" y="-90" width="14" height="145" rx="7" fill="#E8862D" opacity="0.9" />
         </g>
 
         {/* keyboard, centered on the desk top */}
@@ -322,11 +360,11 @@ export function Character() {
           <path d="M252 262 q-16 18 -6 40 l18 4 q-6 -22 6 -36 z" fill="#171717" />
           <path d="M348 262 q16 18 6 40 l-18 4 q6 -22 -6 -36 z" fill="#171717" />
 
-          {/* hands — typing, animated (paused during a note moment, when the right hand holds a pencil instead) */}
-          <g className={action === 'note' ? '' : 'hand-left'}>
+          {/* hands — typing, animated (paused during a note/coffee moment) */}
+          <g className={handsPaused ? '' : 'hand-left'}>
             <ellipse cx="270" cy="304" rx="11" ry="7" fill="#E3AD78" />
           </g>
-          <g className={action === 'note' ? '' : 'hand-right'}>
+          <g className={handsPaused ? '' : 'hand-right'}>
             <ellipse cx="330" cy="304" rx="11" ry="7" fill="#E3AD78" />
           </g>
 
@@ -352,10 +390,29 @@ export function Character() {
               <line x1="24" y1="2" x2="34" y2="-8" stroke="#E8862D" strokeWidth="3" strokeLinecap="round" />
             </g>
           )}
+
+          {/* coffee-break moment — a mug appears by the left hand, with rising steam */}
+          {action === 'drink' && (
+            <g className="pop-drink" transform="translate(255 288)">
+              <rect x="-9" y="-4" width="18" height="16" rx="3" fill="#EAF3FF" stroke="#C9A06B" strokeWidth="1.6" />
+              <path d="M9 0 q8 0 8 6 q0 6 -8 6" fill="none" stroke="#C9A06B" strokeWidth="2" />
+              <line className="steam-line" x1="-4" y1="-10" x2="-4" y2="-17" stroke="#B8BFCF" strokeWidth="1.6" strokeLinecap="round" />
+              <line className="steam-line" x1="2" y1="-11" x2="2" y2="-19" stroke="#B8BFCF" strokeWidth="1.6" strokeLinecap="round" />
+            </g>
+          )}
         </g>
 
-        {/* chair back, peeking below the desk front */}
-        <path d="M280 396 q20 18 40 0 l0 30 q-20 10 -40 0 z" fill="#1B1B1B" opacity="0.5" />
+        {/* gaming chair base — gas cylinder + wide wheeled skid, peeking below the desk front */}
+        <g transform="translate(300 396)">
+          <rect x="-8" y="0" width="16" height="26" rx="6" fill="#2A2A2A" />
+          <path d="M-50 26 q50 14 100 0 q4 10 -6 14 q-44 12 -88 0 q-10 -4 -6 -14 z" fill="#1B1B1F" />
+          <circle cx="-46" cy="42" r="6" fill="#0a0a0a" />
+          <circle cx="-22" cy="48" r="6" fill="#0a0a0a" />
+          <circle cx="0" cy="50" r="6" fill="#0a0a0a" />
+          <circle cx="22" cy="48" r="6" fill="#0a0a0a" />
+          <circle cx="46" cy="42" r="6" fill="#0a0a0a" />
+        </g>
+        <ellipse cx="300" cy="458" rx="60" ry="8" fill="#0D1640" opacity="0.12" />
       </svg>
     </div>
   )
