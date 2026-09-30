@@ -1,42 +1,46 @@
-import { Model } from '../components/scene/Model'
-import { SceneCanvas } from '../components/scene/SceneCanvas'
+import { Character } from '../components/Character'
+import { CONTACT_LINKS } from '../data/links'
 
 export function HeroSection() {
   return (
-    <section data-theme="cream" className="relative flex min-h-screen w-full flex-col overflow-hidden">
-      <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center px-6 pt-16 text-center sm:pt-20">
-        <h1 className="text-5xl font-bold leading-tight tracking-tight sm:text-6xl">
-          Prateek
-        </h1>
-        <div className="mt-3 inline-block rounded-md bg-[#0d1640] px-3 py-1 text-sm font-semibold uppercase tracking-wide text-[#eaf3ff]">
+    <section className="relative mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-10 px-6 pb-16 pt-28 sm:px-10 sm:pt-36 md:grid-cols-2 md:gap-6 md:pb-24">
+      <div className="order-2 flex flex-col items-start gap-5 md:order-1">
+        <span className="inline-block rounded-full bg-navy px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.15em] text-cream">
           Salesforce Developer
-        </div>
-        <p className="mt-6 max-w-md text-base text-[#4a4535]">
-          Coder, biker, AI enthusiast — building BatpodLabs one scroll at a time.
+        </span>
+        <h1 className="text-5xl font-bold leading-[1.05] tracking-tight text-ink sm:text-6xl">
+          Hi, I&apos;m<br />
+          <span className="text-amber-text">Prateek Patel</span>
+        </h1>
+        <p className="max-w-md text-base leading-relaxed text-muted sm:text-lg">
+          4+ years building scalable Salesforce &amp; CPQ solutions — Apex, LWC, Flows and
+          integrations by day, biking and AI experiments the rest of the time.
         </p>
+        <div className="mt-2 flex flex-wrap items-center gap-3">
+          <a
+            href="#skills"
+            className="inline-flex h-11 items-center gap-2 rounded-full bg-amber px-6 text-sm font-semibold text-navy shadow-md shadow-amber/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-amber-hover hover:shadow-lg active:translate-y-0 active:scale-95 motion-reduce:transition-none"
+          >
+            See my skills
+          </a>
+          {CONTACT_LINKS.slice(0, 2).map((link) => (
+            <a
+              key={link.label}
+              href={link.url}
+              target="_blank"
+              rel="noreferrer"
+              className="group relative inline-flex h-11 items-center gap-2 rounded-full border border-navy/15 px-5 text-sm font-medium text-ink transition-colors duration-200 hover:border-amber hover:text-amber-text"
+            >
+              <span className="relative after:absolute after:-bottom-0.5 after:left-0 after:h-px after:w-0 after:bg-amber after:transition-all after:duration-200 group-hover:after:w-full">
+                {link.label}
+              </span>
+            </a>
+          ))}
+        </div>
       </div>
 
-      <div className="relative h-[55vh] min-h-[340px] w-full">
-        <SceneCanvas camera={{ position: [1.15, 0.7, 1.75], fov: 36 }}>
-          <group position={[0.25, -0.2, 0]}>
-            <Model src="/models/Desk.glb" scale={1} rotation={[0, 0.5, 0]} />
-            {/* Man.glb has a x100 scale baked into its own node (FBX cm->m
-                export quirk) — 0.22 here nets a ~1-unit-tall figure that
-                matches the desk's own scale, not a literal "0.22x shrink". */}
-            <Model
-              src="/models/Man.glb"
-              scale={0.22}
-              position={[-0.5, -0.53, 0.1]}
-              rotation={[0, 0.9, 0]}
-            />
-          </group>
-        </SceneCanvas>
-      </div>
-
-      <div className="pointer-events-none absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce text-[#4a4535]">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M6 9l6 6 6-6" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+      <div className="order-1 md:order-2">
+        <Character />
       </div>
     </section>
   )
