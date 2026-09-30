@@ -16,9 +16,16 @@ export function getLenis() {
  * as recommended when pairing Lenis with ScrollTrigger (otherwise the two
  * scroll loops fight each other).
  */
+// easeInOutCubic — a smooth accelerate/decelerate curve in the same spirit
+// as anime.js's power/inOut family (https://animejs.com/easing-editor/power/inout),
+// used here instead of Lenis's slower default easeOutExpo-style curve.
+function easeInOutCubic(t: number) {
+  return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2
+}
+
 export function initLenis() {
   if (lenis) return lenis
-  lenis = new Lenis({ autoRaf: false })
+  lenis = new Lenis({ autoRaf: false, duration: 0.9, easing: easeInOutCubic })
   lenis.on('scroll', ScrollTrigger.update)
   gsap.ticker.add((time) => {
     lenis?.raf(time * 1000)

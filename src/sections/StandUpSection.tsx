@@ -22,7 +22,7 @@ export function StandUpSection() {
         trigger: containerRef.current,
         start: 'top top',
         end: 'bottom bottom',
-        scrub: 0.4,
+        scrub: 0.15,
         invalidateOnRefresh: true,
         onUpdate: (self) => setProgress(self.progress),
       })
@@ -36,7 +36,7 @@ export function StandUpSection() {
     <section
       ref={containerRef}
       data-theme="navy"
-      className="relative min-h-[240vh] w-full overflow-hidden"
+      className="relative min-h-[170vh] w-full overflow-hidden"
     >
       <div className="sticky top-0 h-screen w-full">
         <div
