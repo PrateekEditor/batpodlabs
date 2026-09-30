@@ -1,124 +1,204 @@
 /**
- * Original flat-vector illustration inspired by Prateek's own reference
- * photo (round sunglasses, black hoodie with a red speed-stripe chest
- * mark, light jeans, brown boots, a thigh pouch, hands tucked in the
- * kangaroo pocket). Hand-built from primitives — not a 3D model, not a
- * traced/reproduced photo — to keep the page instant-loading and give it
- * a bit of personality.
+ * Original flat-vector desk scene — Prateek (back/three-quarter view, same
+ * black hoodie + red speed-stripe mark as before) seated between two
+ * monitors, hands animating on the keyboard. A wall-mounted notice board
+ * carries an original cloud-mark sticky (nodding to Salesforce, not a
+ * traced logo) and an original friendly-bot sticky (nodding to Agentforce,
+ * not Salesforce's actual mascot artwork), plus a small original robot
+ * figurine on the desk. Hand-built from primitives — not 3D, not a traced
+ * photo or a copy of any real product's mascot/logo artwork.
  */
 export function Character() {
   return (
-    <div className="character-float relative mx-auto w-full max-w-[360px] sm:max-w-[400px]">
-      {/* soft glow blobs behind the figure */}
+    <div className="character-float relative mx-auto w-full max-w-[460px] sm:max-w-[540px]">
+      {/* soft glow blobs behind the scene */}
       <div
         aria-hidden
-        className="absolute left-1/2 top-[18%] -z-10 h-64 w-64 -translate-x-1/2 rounded-full opacity-40 blur-3xl sm:h-80 sm:w-80"
+        className="absolute left-1/2 top-[30%] -z-10 h-64 w-64 -translate-x-1/2 rounded-full opacity-40 blur-3xl sm:h-80 sm:w-80"
         style={{ background: 'radial-gradient(circle, #E8862D 0%, transparent 70%)' }}
       />
       <div
         aria-hidden
-        className="absolute right-[6%] top-[8%] -z-10 h-28 w-28 rounded-full opacity-30 blur-2xl"
+        className="absolute right-[4%] top-[6%] -z-10 h-28 w-28 rounded-full opacity-30 blur-2xl"
         style={{ background: 'radial-gradient(circle, #2D7FF9 0%, transparent 70%)' }}
       />
 
-      <svg viewBox="0 0 420 560" className="relative z-10 h-auto w-full" role="img" aria-label="Illustration of Prateek Patel">
-        {/* speed lines, biker/motion cue */}
-        <g className="speed-lines" stroke="#E8862D" strokeWidth="5" strokeLinecap="round" opacity="0.55">
-          <line x1="8" y1="150" x2="58" y2="150" />
-          <line x1="2" y1="172" x2="42" y2="172" />
-          <line x1="12" y1="194" x2="52" y2="194" />
-        </g>
-
+      <svg viewBox="0 0 560 460" className="relative z-10 h-auto w-full" role="img" aria-label="Illustration of Prateek Patel at his desk, typing between two monitors">
         {/* ground shadow */}
-        <ellipse cx="210" cy="538" rx="108" ry="14" fill="#0D1640" opacity="0.1" />
+        <ellipse cx="300" cy="444" rx="200" ry="12" fill="#0D1640" opacity="0.08" />
 
-        {/* boots */}
-        <path d="M148 470 h34 q10 0 10 10 v14 q0 8 -10 8 h-44 q-8 0 -6 -10 z" fill="#5B3A24" />
-        <path d="M238 470 h34 q10 0 10 10 v14 q0 8 -10 8 h-44 q-8 0 -6 -10 z" fill="#5B3A24" />
-        <rect x="148" y="466" width="36" height="10" rx="4" fill="#6E4A2E" />
-        <rect x="238" y="466" width="36" height="10" rx="4" fill="#6E4A2E" />
-
-        {/* legs (jeans) — start higher than the hoodie hem so the thigh reads clearly */}
-        <path d="M168 300 q-4 92 -20 168 h34 q10 -78 20 -168 z" fill="#C2C6CF" />
-        <path d="M248 300 q6 92 16 168 h-34 q-8 -78 -14 -168 z" fill="#C2C6CF" />
-        <path d="M168 300 q-4 92 -20 168 h34 q10 -78 20 -168 z" fill="url(#jeansShade)" opacity="0.5" />
-
-        {/* hoodie hood peeking behind neck */}
-        <path d="M168 232 q42 -34 84 0 l-6 30 q-36 -22 -72 0 z" fill="#0F0F0F" />
-
-        {/* torso / hoodie body — shorter hem so more leg shows, matching the reference photo's proportions */}
-        <path
-          d="M150 250
-             q60 -34 120 0
-             q26 14 28 60
-             l-8 44
-             q-8 20 -30 20
-             h-96
-             q-22 0 -30 -20
-             l-8 -44
-             q2 -46 28 -60 z"
-          fill="#151515"
-        />
-        {/* kangaroo pocket */}
-        <path d="M172 340 q38 -16 76 0 l-5 30 q-33 -13 -66 0 z" fill="#0B0B0B" opacity="0.6" />
-        {/* drawstrings */}
-        <line x1="198" y1="256" x2="194" y2="296" stroke="#3A3A3A" strokeWidth="3" strokeLinecap="round" />
-        <line x1="222" y1="256" x2="226" y2="296" stroke="#3A3A3A" strokeWidth="3" strokeLinecap="round" />
-
-        {/* red speed-stripe chest mark */}
-        <g transform="translate(244 276) rotate(-18)">
-          <rect width="34" height="6" rx="3" fill="#E4372B" />
-          <rect y="10" width="26" height="6" rx="3" fill="#E4372B" />
-          <rect y="20" width="18" height="6" rx="3" fill="#E4372B" />
-        </g>
-
-        {/* sleeves + hands tucked in pocket */}
-        <path d="M150 256 q-30 8 -36 52 q-4 26 14 42 l16 -10 q-12 -30 6 -72 z" fill="#171717" />
-        <path d="M270 256 q30 8 36 52 q4 26 -14 42 l-16 -10 q12 -30 -6 -72 z" fill="#171717" />
-        {/* watch on left cuff */}
-        <rect x="122" y="324" width="16" height="10" rx="2" fill="#1B1B1B" />
-
-        {/* thigh pouch — sits over the jeans, below the hoodie hem, painted after the hoodie so it stays visible */}
-        <g transform="translate(232 396) rotate(10)">
-          <rect x="-22" y="-6" width="46" height="58" rx="11" fill="#161616" />
-          <rect x="-22" y="12" width="46" height="7" fill="#E8862D" opacity="0.7" />
-          <rect x="-13" y="-14" width="28" height="11" rx="5" fill="#2A2A2A" />
-          <rect x="16" y="14" width="10" height="16" rx="3" fill="#0B0B0B" />
-        </g>
-
-        {/* neck */}
-        <rect x="196" y="196" width="28" height="30" rx="10" fill="#D9A066" />
-
-        {/* head */}
-        <ellipse cx="210" cy="164" rx="46" ry="48" fill="#E3AD78" />
-        {/* ears */}
-        <ellipse cx="164" cy="168" rx="7" ry="10" fill="#E3AD78" />
-        <ellipse cx="256" cy="168" rx="7" ry="10" fill="#E3AD78" />
-        {/* hair */}
-        <path d="M164 152 q4 -48 46 -48 q42 0 46 48 q-8 -14 -22 -16 q4 10 2 18 q-10 -16 -26 -16 q-16 0 -26 16 q-2 -8 2 -18 q-14 2 -22 16 z" fill="#14110F" />
-        {/* light stubble */}
-        <path d="M180 188 q30 22 60 0 q-4 18 -30 22 q-26 -4 -30 -22 z" fill="#14110F" opacity="0.12" />
-
-        {/* sunglasses */}
+        {/* ===== shelf + notice board (wall) — sit fully above the monitors, y <= 138 ===== */}
         <g>
-          <rect x="172" y="152" width="34" height="24" rx="12" fill="#151515" />
-          <rect x="214" y="152" width="34" height="24" rx="12" fill="#151515" />
-          <line x1="206" y1="160" x2="214" y2="160" stroke="#151515" strokeWidth="4" />
-          <line x1="168" y1="158" x2="156" y2="154" stroke="#151515" strokeWidth="3" strokeLinecap="round" />
-          <line x1="252" y1="158" x2="264" y2="154" stroke="#151515" strokeWidth="3" strokeLinecap="round" />
-          <rect className="glint" x="180" y="157" width="9" height="5" rx="2" fill="#F2E9D8" opacity="0.85" />
-          <rect className="glint" x="222" y="157" width="9" height="5" rx="2" fill="#F2E9D8" opacity="0.85" />
+          {/* notice board */}
+          <rect x="384" y="8" width="150" height="110" rx="10" fill="#E4D9BE" stroke="#C9A06B" strokeWidth="3" />
+
+          {/* sticky: cloud mark (Salesforce-nod, original icon) */}
+          <g transform="translate(396 20) rotate(-6)">
+            <rect width="44" height="36" rx="3" fill="#EAF3FF" />
+            <g transform="translate(8 9)">
+              <circle cx="6" cy="9" r="6.5" fill="#2D7FF9" />
+              <circle cx="15" cy="5" r="8" fill="#2D7FF9" />
+              <circle cx="24" cy="10" r="5.5" fill="#2D7FF9" />
+              <rect x="1" y="10" width="28" height="7" rx="3.5" fill="#2D7FF9" />
+            </g>
+          </g>
+          <circle cx="418" cy="18" r="3.6" fill="#E4372B" />
+
+          {/* sticky: friendly bot (Agentforce-nod, original character) */}
+          <g transform="translate(452 22) rotate(5)">
+            <rect width="42" height="38" rx="3" fill="#FFF3E6" />
+            <g transform="translate(5 6)">
+              <line x1="16" y1="0" x2="16" y2="5" stroke="#0D1640" strokeWidth="2" strokeLinecap="round" />
+              <circle cx="16" cy="2" r="2" fill="#E8862D" />
+              <rect x="4" y="5" width="24" height="19" rx="7" fill="#0D1640" />
+              <circle cx="11" cy="14" r="2.4" fill="#EAF3FF" />
+              <circle cx="21" cy="14" r="2.4" fill="#EAF3FF" />
+              <path d="M11 19 q5 4 10 0" stroke="#EAF3FF" strokeWidth="1.6" strokeLinecap="round" fill="none" />
+            </g>
+          </g>
+          <circle cx="473" cy="20" r="3.6" fill="#0D1640" />
+
+          {/* sticky: notes lines */}
+          <g transform="translate(400 62) rotate(-3)">
+            <rect width="86" height="38" rx="3" fill="#FFFBEF" />
+            <line x1="7" y1="10" x2="64" y2="10" stroke="#C9A06B" strokeWidth="3" strokeLinecap="round" />
+            <line x1="7" y1="19" x2="54" y2="19" stroke="#C9A06B" strokeWidth="3" strokeLinecap="round" />
+            <line x1="7" y1="28" x2="60" y2="28" stroke="#C9A06B" strokeWidth="3" strokeLinecap="round" />
+          </g>
+          <circle cx="406" cy="60" r="3.6" fill="#E8862D" />
+
+          {/* shelf, flush above the monitor tops */}
+          <rect x="384" y="124" width="150" height="12" rx="5" fill="#C9A06B" />
+          <rect x="396" y="88" width="18" height="36" rx="3" fill="#2D7FF9" />
+          <rect x="416" y="82" width="18" height="42" rx="3" fill="#E8862D" />
+          <rect x="436" y="92" width="16" height="32" rx="3" fill="#0D1640" />
+          <path d="M498 124 q-14 -22 -2 -36 q4 16 2 36 z" fill="#5C8A4E" />
+          <path d="M498 124 q13 -20 4 -32 q-2 16 -4 32 z" fill="#6E9C5E" />
         </g>
 
-        {/* smile */}
-        <path d="M194 196 q16 14 32 0" stroke="#5B3A24" strokeWidth="3" strokeLinecap="round" fill="none" />
+        {/* ===== monitors ===== */}
+        {/* left screen */}
+        <g>
+          <rect x="94" y="236" width="18" height="30" rx="4" fill="#8A8477" />
+          <rect x="90" y="140" width="150" height="102" rx="10" fill="#151515" />
+          <rect x="100" y="150" width="130" height="82" rx="4" fill="#0D1640" />
+          <g className="code-lines" opacity="0.9">
+            <rect x="108" y="160" width="60" height="6" rx="3" fill="#E8862D" />
+            <rect x="108" y="172" width="90" height="6" rx="3" fill="#5fd8ff" />
+            <rect x="108" y="184" width="70" height="6" rx="3" fill="#8fb6ff" />
+            <rect x="120" y="196" width="76" height="6" rx="3" fill="#E4372B" />
+            <rect x="108" y="208" width="50" height="6" rx="3" fill="#5fd8ff" />
+            <rect x="108" y="220" width="84" height="6" rx="3" fill="#8fb6ff" />
+          </g>
+        </g>
 
-        <defs>
-          <linearGradient id="jeansShade" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stopColor="#8F94A0" />
-            <stop offset="1" stopColor="#C2C6CF" stopOpacity="0" />
-          </linearGradient>
-        </defs>
+        {/* right screen */}
+        <g>
+          <rect x="448" y="236" width="18" height="30" rx="4" fill="#8A8477" />
+          <rect x="420" y="140" width="150" height="102" rx="10" fill="#151515" />
+          <rect x="430" y="150" width="130" height="82" rx="4" fill="#0D1640" />
+          <g className="code-lines" opacity="0.9">
+            <rect x="438" y="160" width="80" height="6" rx="3" fill="#5fd8ff" />
+            <rect x="438" y="172" width="56" height="6" rx="3" fill="#E8862D" />
+            <rect x="450" y="184" width="96" height="6" rx="3" fill="#8fb6ff" />
+            <rect x="438" y="196" width="66" height="6" rx="3" fill="#5fd8ff" />
+            <rect x="438" y="208" width="88" height="6" rx="3" fill="#E4372B" />
+            <rect x="438" y="220" width="46" height="6" rx="3" fill="#8fb6ff" />
+          </g>
+        </g>
+
+        {/* ===== desk ===== */}
+        <path d="M30 282 L530 282 L556 304 L4 304 Z" fill="#E0C79C" />
+        <rect x="20" y="304" width="520" height="92" rx="10" fill="#C9A06B" />
+        <rect x="20" y="304" width="520" height="14" fill="#D4AE7C" />
+        <rect x="46" y="396" width="16" height="36" rx="4" fill="#A77E4F" />
+        <rect x="498" y="396" width="16" height="36" rx="4" fill="#A77E4F" />
+
+        {/* pen cup + pencils (desk, left) */}
+        <g transform="translate(150 260)">
+          <rect x="0" y="14" width="30" height="28" rx="5" fill="#2A2A2A" />
+          <line x1="6" y1="18" x2="2" y2="-6" stroke="#E8862D" strokeWidth="4" strokeLinecap="round" />
+          <line x1="15" y1="18" x2="14" y2="-10" stroke="#5fd8ff" strokeWidth="4" strokeLinecap="round" />
+          <line x1="24" y1="18" x2="27" y2="-4" stroke="#C2C6CF" strokeWidth="4" strokeLinecap="round" />
+        </g>
+
+        {/* original robot figurine — replaces a desk-toy penguin */}
+        <g transform="translate(60 268)">
+          <ellipse cx="18" cy="38" rx="17" ry="4" fill="#0D1640" opacity="0.12" />
+          <rect x="4" y="14" width="28" height="24" rx="9" fill="#0D1640" />
+          <circle cx="18" cy="6" r="9" fill="#EAF3FF" stroke="#0D1640" strokeWidth="2.5" />
+          <circle cx="15" cy="5" r="1.8" fill="#0D1640" />
+          <circle cx="21" cy="5" r="1.8" fill="#0D1640" />
+          <path d="M14 9 q4 3 8 0" stroke="#0D1640" strokeWidth="1.4" strokeLinecap="round" fill="none" />
+          <line x1="18" y1="-3" x2="18" y2="-9" stroke="#0D1640" strokeWidth="2" strokeLinecap="round" />
+          <circle className="glint" cx="18" cy="-10" r="2.6" fill="#E8862D" />
+          <rect x="9" y="20" width="18" height="6" rx="3" fill="#E8862D" opacity="0.85" />
+          <circle cx="-2" cy="26" r="4" fill="#0D1640" />
+          <circle cx="38" cy="26" r="4" fill="#0D1640" />
+        </g>
+
+        {/* small plant, desk right */}
+        <g transform="translate(470 262)">
+          <path d="M8 40 h30 l-4 14 h-22 z" fill="#EAF3FF" stroke="#C9A06B" strokeWidth="2" />
+          <path d="M23 40 q-16 -10 -18 -30 q16 4 20 18 q3 -16 16 -20 q0 18 -10 27 q10 -4 16 2 q-10 8 -24 3 z" fill="#5C8A4E" />
+        </g>
+
+        {/* keyboard, centered on the desk top */}
+        <rect x="262" y="296" width="76" height="16" rx="4" fill="#1B1B1B" />
+        <g fill="#3A3A3A">
+          <rect x="268" y="300" width="6" height="6" rx="1.5" />
+          <rect x="278" y="300" width="6" height="6" rx="1.5" />
+          <rect x="288" y="300" width="6" height="6" rx="1.5" />
+          <rect x="298" y="300" width="24" height="6" rx="1.5" />
+          <rect x="326" y="300" width="6" height="6" rx="1.5" />
+        </g>
+
+        {/* ===== Prateek, seated, back/three-quarter view ===== */}
+        <g>
+          {/* hoodie hood + shoulders/back */}
+          <path
+            d="M228 306
+               q-8 -76 72 -90
+               q80 -14 72 90
+               q0 10 -10 10
+               h-124
+               q-10 0 -10 -10 z"
+            fill="#151515"
+          />
+          {/* hood seam */}
+          <path d="M300 218 q4 34 0 60" stroke="#2A2A2A" strokeWidth="3" fill="none" strokeLinecap="round" />
+
+          {/* red speed-stripe mark, upper back/shoulder */}
+          <g transform="translate(252 244) rotate(14)">
+            <rect width="30" height="6" rx="3" fill="#E4372B" />
+            <rect y="10" width="22" height="6" rx="3" fill="#E4372B" />
+            <rect y="20" width="15" height="6" rx="3" fill="#E4372B" />
+          </g>
+
+          {/* head (back of head, short dark hair) */}
+          <circle cx="300" cy="178" r="40" fill="#14110F" />
+          <ellipse cx="300" cy="196" rx="30" ry="16" fill="#E3AD78" />
+          {/* ears */}
+          <ellipse cx="270" cy="192" rx="6" ry="9" fill="#E3AD78" />
+          <ellipse cx="330" cy="192" rx="6" ry="9" fill="#E3AD78" />
+          {/* sunglasses arm hint, catching screen glow */}
+          <rect className="glint" x="326" y="186" width="7" height="4" rx="2" fill="#5fd8ff" opacity="0.7" />
+
+          {/* arms reaching forward to the keyboard */}
+          <path d="M252 262 q-16 18 -6 40 l18 4 q-6 -22 6 -36 z" fill="#171717" />
+          <path d="M348 262 q16 18 6 40 l-18 4 q6 -22 -6 -36 z" fill="#171717" />
+
+          {/* hands — typing, animated */}
+          <g className="hand-left">
+            <ellipse cx="270" cy="304" rx="11" ry="7" fill="#E3AD78" />
+          </g>
+          <g className="hand-right">
+            <ellipse cx="330" cy="304" rx="11" ry="7" fill="#E3AD78" />
+          </g>
+        </g>
+
+        {/* chair back, peeking below the desk front */}
+        <path d="M280 396 q20 18 40 0 l0 30 q-20 10 -40 0 z" fill="#1B1B1B" opacity="0.5" />
       </svg>
     </div>
   )
