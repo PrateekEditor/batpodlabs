@@ -19,6 +19,10 @@ let muted = false
 let unlocked = false
 let typingTimer: number | null = null
 let padStarted = false
+// Sound should only ever be heard while this tab is the one on screen — a
+// background tab (switched away, minimized, another tab focused) is treated
+// as silent, same as if it were muted, without touching the mute preference.
+let tabHidden = typeof document !== 'undefined' ? document.hidden : false
 const listeners = new Set<Listener>()
 
 if (typeof window !== 'undefined') {
@@ -27,6 +31,32 @@ if (typeof window !== 'undefined') {
   } catch {
     muted = false
   }
+}
+
+/** Recompute the master gain from both the mute preference and tab
+ * visibility — either one alone is enough to silence everything. */
+function applyGain() {
+  if (!master || !ctx) return
+  const target = muted || tabHidden ? 0 : 1
+  master.gain.setTargetAtTime(target, ctx.currentTime, 0.05)
+}
+
+if (typeof document !== 'undefined') {
+  document.addEventListener('visibilitychange', () => {
+    tabHidden = document.hidden
+    if (!ctx) return
+    if (tabHidden) {
+      // Fade out immediately, then fully suspend shortly after so a
+      // background tab isn't spending CPU on audio no one can hear.
+      applyGain()
+      window.setTimeout(() => {
+        if (document.hidden && ctx && ctx.state === 'running') void ctx.suspend()
+      }, 120)
+    } else {
+      if (ctx.state === 'suspended') void ctx.resume()
+      applyGain()
+    }
+  })
 }
 
 function getCtx(): AudioContext | null {
@@ -43,7 +73,7 @@ function getMaster(): GainNode | null {
   if (!ac) return null
   if (!master) {
     master = ac.createGain()
-    master.gain.value = muted ? 0 : 1
+    master.gain.value = muted || tabHidden ? 0 : 1
     master.connect(ac.destination)
   }
   return master
@@ -131,6 +161,7 @@ export function unlockAudio() {
   if (unlocked) return
   unlocked = true
   getMaster()
+  applyGain()
   startAmbientPad()
   if (typingTimer === null) scheduleNextTick()
 }
@@ -162,10 +193,7 @@ export function isMuted() {
 
 export function setMuted(next: boolean) {
   muted = next
-  const ac = getCtx()
-  if (master && ac) {
-    master.gain.setTargetAtTime(next ? 0 : 1, ac.currentTime, 0.05)
-  }
+  applyGain()
   try {
     window.localStorage.setItem('bpl-muted', next ? '1' : '0')
   } catch {
