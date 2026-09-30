@@ -10,6 +10,9 @@
   --color-amber-text: #b85e1a;
   --color-ink: #1a1f2e;
   --color-muted: #5b6178;
+
+  --font-display: "Space Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 :root {
@@ -24,7 +27,11 @@ html, body, #root {
 body {
   background: var(--color-cream);
   color: var(--color-ink);
-  font-family: "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: var(--font-sans);
+}
+
+h1, h2, h3, .font-display {
+  font-family: var(--font-display);
 }
 
 /*
@@ -118,15 +125,63 @@ body::before {
 .code-lines rect:nth-child(5) { animation-delay: 1.2s; }
 .code-lines rect:nth-child(6) { animation-delay: 1.5s; }
 
+/* Random "idea" / "note" moments, triggered by tapping the desk robot */
+@keyframes pop-idea {
+  0% { opacity: 0; transform: translate(300px, 106px) scale(0.5); }
+  15% { opacity: 1; transform: translate(300px, 96px) scale(1.08); }
+  25% { transform: translate(300px, 96px) scale(1); }
+  85% { opacity: 1; }
+  100% { opacity: 0; transform: translate(300px, 90px) scale(0.9); }
+}
+.pop-idea {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pop-idea 2s ease-out forwards;
+}
+
+@keyframes pop-note {
+  0% { opacity: 0; transform: translate(340px, 302px) scale(0.6); }
+  15% { opacity: 1; transform: translate(340px, 292px) scale(1); }
+  85% { opacity: 1; }
+  100% { opacity: 0; transform: translate(340px, 288px) scale(0.95); }
+}
+.pop-note {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pop-note 2s ease-out forwards;
+}
+
+@keyframes note-write {
+  0%, 20% { stroke-dashoffset: 24; opacity: 0; }
+  40% { opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 1; }
+}
+.note-line {
+  stroke-dasharray: 24;
+  animation: note-write 1.3s ease-out 0.3s both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .character-float,
   .glint,
   .speed-lines line,
   .hand-left,
   .hand-right,
-  .code-lines rect {
+  .code-lines rect,
+  .pop-idea,
+  .pop-note,
+  .note-line {
     animation: none;
   }
+}
+
+/* Interactive SVG elements (robot, amplifiers) — a calmer focus ring than
+   the browser's default black rectangle, still clearly visible for
+   keyboard users. */
+svg [role="button"] {
+  outline-color: #e8862d;
+  outline-offset: 3px;
+  border-radius: 6px;
 }
 
 /* Scroll-reveal for skill groups / cards */

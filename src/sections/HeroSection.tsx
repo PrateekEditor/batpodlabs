@@ -5,16 +5,21 @@ export function HeroSection() {
   return (
     <section className="relative mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-10 px-6 pb-16 pt-28 sm:px-10 sm:pt-36 md:grid-cols-2 md:gap-6 md:pb-24">
       <div className="order-2 flex flex-col items-start gap-5 md:order-1">
-        <span className="inline-block rounded-full bg-navy px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.15em] text-cream">
-          Salesforce Developer
+        <span className="inline-block rounded-full bg-navy px-4 py-1.5 text-sm font-semibold text-cream">
+          Salesforce Developer + AI Automation Engineer
         </span>
         <h1 className="text-5xl font-bold leading-[1.05] tracking-tight text-ink sm:text-6xl">
           Hi, I&apos;m<br />
           <span className="text-amber-text">Prateek Patel</span>
         </h1>
-        <p className="max-w-md text-base leading-relaxed text-muted sm:text-lg">
-          4+ years building scalable Salesforce &amp; CPQ solutions — Apex, LWC, Flows and
-          integrations by day, biking and AI experiments the rest of the time.
+        <blockquote className="max-w-lg border-l-2 border-amber py-1 pl-4 text-lg font-medium leading-snug text-ink sm:text-xl">
+          I teach AI to do the repetitive Salesforce work — org health checks, CPQ
+          fixes, automation debugging — so developers spend their time on what
+          actually needs one.
+        </blockquote>
+        <p className="max-w-md text-base leading-relaxed text-muted">
+          4+ years building scalable Salesforce &amp; CPQ solutions — Apex, LWC, Flows,
+          integrations, and the AI tooling layered on top of them.
         </p>
         <div className="mt-2 flex flex-wrap items-center gap-3">
           <a

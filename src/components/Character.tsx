@@ -1,3 +1,8 @@
+import { useEffect, useRef, useState } from 'react'
+import { isMuted, playBotBeep, subscribeMuted, toggleMuted, unlockAudio } from '../lib/audio'
+
+type Action = 'idle' | 'idea' | 'note'
+
 /**
  * Original flat-vector desk scene — Prateek (back/three-quarter view, same
  * black hoodie + red speed-stripe mark as before) seated between two
@@ -5,10 +10,35 @@
  * carries an original cloud-mark sticky (nodding to Salesforce, not a
  * traced logo) and an original friendly-bot sticky (nodding to Agentforce,
  * not Salesforce's actual mascot artwork), plus a small original robot
- * figurine on the desk. Hand-built from primitives — not 3D, not a traced
- * photo or a copy of any real product's mascot/logo artwork.
+ * figurine on the desk that beeps and nudges a random "idea" or "note"
+ * animation when tapped. Hand-built from primitives — not 3D, not a
+ * traced photo or a copy of any real product's mascot/logo artwork.
  */
 export function Character() {
+  const [muted, setMutedState] = useState(isMuted)
+  const [action, setAction] = useState<Action>('idle')
+  const actionTimer = useRef<number | null>(null)
+
+  useEffect(() => subscribeMuted(setMutedState), [])
+
+  useEffect(() => () => {
+    if (actionTimer.current) window.clearTimeout(actionTimer.current)
+  }, [])
+
+  function handleBotTap() {
+    unlockAudio()
+    playBotBeep()
+    const next: Action = Math.random() < 0.5 ? 'idea' : 'note'
+    setAction(next)
+    if (actionTimer.current) window.clearTimeout(actionTimer.current)
+    actionTimer.current = window.setTimeout(() => setAction('idle'), 2000)
+  }
+
+  function handleAmpTap() {
+    unlockAudio()
+    toggleMuted()
+  }
+
   return (
     <div className="character-float relative mx-auto w-full max-w-[460px] sm:max-w-[540px]">
       {/* soft glow blobs behind the scene */}
@@ -122,8 +152,18 @@ export function Character() {
           <line x1="24" y1="18" x2="27" y2="-4" stroke="#C2C6CF" strokeWidth="4" strokeLinecap="round" />
         </g>
 
-        {/* original robot figurine — replaces a desk-toy penguin */}
-        <g transform="translate(60 268)">
+        {/* original robot figurine — replaces a desk-toy penguin. Tap it: beep + a random idea/note moment. */}
+        <g
+          transform="translate(60 268)"
+          onClick={handleBotTap}
+          className="cursor-pointer"
+          role="button"
+          tabIndex={0}
+          aria-label="Tap the desk robot"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') handleBotTap()
+          }}
+        >
           <ellipse cx="18" cy="38" rx="17" ry="4" fill="#0D1640" opacity="0.12" />
           <rect x="4" y="14" width="28" height="24" rx="9" fill="#0D1640" />
           <circle cx="18" cy="6" r="9" fill="#EAF3FF" stroke="#0D1640" strokeWidth="2.5" />
@@ -135,6 +175,42 @@ export function Character() {
           <rect x="9" y="20" width="18" height="6" rx="3" fill="#E8862D" opacity="0.85" />
           <circle cx="-2" cy="26" r="4" fill="#0D1640" />
           <circle cx="38" cy="26" r="4" fill="#0D1640" />
+        </g>
+
+        {/* tiny amplifiers flanking the robot — tap either to mute/unmute all sound */}
+        <g
+          transform="translate(14 302)"
+          onClick={handleAmpTap}
+          className="cursor-pointer"
+          role="button"
+          tabIndex={0}
+          aria-label={muted ? 'Unmute site sound' : 'Mute site sound'}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') handleAmpTap()
+          }}
+        >
+          <rect width="22" height="20" rx="4" fill="#151515" opacity={muted ? 0.35 : 1} />
+          <circle cx="7" cy="7" r="3" fill={muted ? '#6f6a5e' : '#E8862D'} />
+          <circle cx="15" cy="7" r="2" fill={muted ? '#6f6a5e' : '#5fd8ff'} />
+          <rect x="4" y="13" width="14" height="3" rx="1.5" fill="#3A3A3A" />
+          {muted && <line x1="-2" y1="22" x2="24" y2="-2" stroke="#E4372B" strokeWidth="2" strokeLinecap="round" />}
+        </g>
+        <g
+          transform="translate(110 302)"
+          onClick={handleAmpTap}
+          className="cursor-pointer"
+          role="button"
+          tabIndex={0}
+          aria-label={muted ? 'Unmute site sound' : 'Mute site sound'}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') handleAmpTap()
+          }}
+        >
+          <rect width="22" height="20" rx="4" fill="#151515" opacity={muted ? 0.35 : 1} />
+          <circle cx="7" cy="7" r="3" fill={muted ? '#6f6a5e' : '#5fd8ff'} />
+          <circle cx="15" cy="7" r="2" fill={muted ? '#6f6a5e' : '#E8862D'} />
+          <rect x="4" y="13" width="14" height="3" rx="1.5" fill="#3A3A3A" />
+          {muted && <line x1="-2" y1="22" x2="24" y2="-2" stroke="#E4372B" strokeWidth="2" strokeLinecap="round" />}
         </g>
 
         {/* small plant, desk right */}
@@ -188,13 +264,36 @@ export function Character() {
           <path d="M252 262 q-16 18 -6 40 l18 4 q-6 -22 6 -36 z" fill="#171717" />
           <path d="M348 262 q16 18 6 40 l-18 4 q6 -22 -6 -36 z" fill="#171717" />
 
-          {/* hands — typing, animated */}
-          <g className="hand-left">
+          {/* hands — typing, animated (paused during a note moment, when the right hand holds a pencil instead) */}
+          <g className={action === 'note' ? '' : 'hand-left'}>
             <ellipse cx="270" cy="304" rx="11" ry="7" fill="#E3AD78" />
           </g>
-          <g className="hand-right">
+          <g className={action === 'note' ? '' : 'hand-right'}>
             <ellipse cx="330" cy="304" rx="11" ry="7" fill="#E3AD78" />
           </g>
+
+          {/* idea moment — a lightbulb pops above his head */}
+          {action === 'idea' && (
+            <g className="pop-idea" transform="translate(300 96)">
+              <circle r="14" fill="#FFF3E6" stroke="#E8862D" strokeWidth="2.5" />
+              <rect x="-5" y="12" width="10" height="7" rx="2" fill="#C9A06B" />
+              <line x1="-4" y1="16" x2="4" y2="16" stroke="#8A6B2A" strokeWidth="1.4" />
+              <line x1="0" y1="-24" x2="0" y2="-18" stroke="#E8862D" strokeWidth="2.4" strokeLinecap="round" />
+              <line x1="16" y1="-16" x2="21" y2="-20" stroke="#E8862D" strokeWidth="2.4" strokeLinecap="round" />
+              <line x1="-16" y1="-16" x2="-21" y2="-20" stroke="#E8862D" strokeWidth="2.4" strokeLinecap="round" />
+            </g>
+          )}
+
+          {/* note-taking moment — a small notepad + pencil appear by the right hand */}
+          {action === 'note' && (
+            <g className="pop-note" transform="translate(340 292)">
+              <rect width="30" height="24" rx="3" fill="#FFFBEF" stroke="#C9A06B" strokeWidth="1.6" />
+              <line x1="5" y1="8" x2="23" y2="8" stroke="#C9A06B" strokeWidth="2" strokeLinecap="round" className="note-line" />
+              <line x1="5" y1="14" x2="19" y2="14" stroke="#C9A06B" strokeWidth="2" strokeLinecap="round" className="note-line" />
+              <line x1="5" y1="20" x2="21" y2="20" stroke="#C9A06B" strokeWidth="2" strokeLinecap="round" className="note-line" />
+              <line x1="24" y1="2" x2="34" y2="-8" stroke="#E8862D" strokeWidth="3" strokeLinecap="round" />
+            </g>
+          )}
         </g>
 
         {/* chair back, peeking below the desk front */}
