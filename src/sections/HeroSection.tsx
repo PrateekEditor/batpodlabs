@@ -1,5 +1,14 @@
+import { Suspense, lazy } from 'react'
 import { Character } from '../components/Character'
 import { CONTACT_LINKS } from '../data/links'
+
+// Experimental: visit with ?three=1 in the URL to preview the Spline-exported
+// 3D room instead of the regular hand-drawn illustration. Lazy-loaded so
+// Three.js/fiber/drei (and the 18MB model) never touch the bundle or network
+// for a normal visitor — only fetched if that query param is present.
+// Remove this whole path once a direction is picked.
+const ThreeRoom = lazy(() => import('../components/ThreeRoom').then((m) => ({ default: m.ThreeRoom })))
+const showThreeRoom = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('three') === '1'
 
 export function HeroSection() {
   return (
@@ -45,7 +54,13 @@ export function HeroSection() {
       </div>
 
       <div className="order-1 md:order-2">
-        <Character />
+        {showThreeRoom ? (
+          <Suspense fallback={<div className="h-[520px] w-full animate-pulse rounded-2xl bg-navy/5" />}>
+            <ThreeRoom />
+          </Suspense>
+        ) : (
+          <Character />
+        )}
       </div>
     </section>
   )
