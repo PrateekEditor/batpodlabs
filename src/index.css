@@ -175,11 +175,13 @@ body::before {
   }
 }
 
-/* Interactive SVG elements (robot, amplifiers) — a calmer focus ring than
-   the browser's default black rectangle, still clearly visible for
-   keyboard users. */
+/* Interactive SVG elements (robot, amplifiers) — no lingering outline after
+   a mouse click; a calmer focus ring still shows for keyboard users. */
 svg [role="button"] {
-  outline-color: #e8862d;
+  outline: none;
+}
+svg [role="button"]:focus-visible {
+  outline: 2px solid #e8862d;
   outline-offset: 3px;
   border-radius: 6px;
 }

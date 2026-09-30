@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type KeyboardEvent, type MouseEvent } from 'react'
 import { isMuted, playBotBeep, subscribeMuted, toggleMuted, unlockAudio } from '../lib/audio'
 
 type Action = 'idle' | 'idea' | 'note'
@@ -11,32 +11,65 @@ type Action = 'idle' | 'idea' | 'note'
  * traced logo) and an original friendly-bot sticky (nodding to Agentforce,
  * not Salesforce's actual mascot artwork), plus a small original robot
  * figurine on the desk that beeps and nudges a random "idea" or "note"
- * animation when tapped. Hand-built from primitives — not 3D, not a
- * traced photo or a copy of any real product's mascot/logo artwork.
+ * animation when tapped — the same animations also fire on their own at
+ * random intervals, like the ambient typing loop. Hand-built from
+ * primitives — not 3D, not a traced photo or a copy of any real product's
+ * mascot/logo artwork.
  */
 export function Character() {
   const [muted, setMutedState] = useState(isMuted)
   const [action, setAction] = useState<Action>('idle')
+  const actionRef = useRef<Action>('idle')
   const actionTimer = useRef<number | null>(null)
 
   useEffect(() => subscribeMuted(setMutedState), [])
 
-  useEffect(() => () => {
-    if (actionTimer.current) window.clearTimeout(actionTimer.current)
+  useEffect(() => {
+    actionRef.current = action
+  }, [action])
+
+  // Random idle moments — fires on its own every so often, independent of
+  // taps, so the scene never looks frozen even if no one clicks anything.
+  useEffect(() => {
+    let stopped = false
+    let timer: number
+    const loop = () => {
+      const delay = 5000 + Math.random() * 6000
+      timer = window.setTimeout(() => {
+        if (!stopped && actionRef.current === 'idle') triggerAction(false)
+        if (!stopped) loop()
+      }, delay)
+    }
+    loop()
+    return () => {
+      stopped = true
+      window.clearTimeout(timer)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  function handleBotTap() {
-    unlockAudio()
-    playBotBeep()
+  useEffect(
+    () => () => {
+      if (actionTimer.current) window.clearTimeout(actionTimer.current)
+    },
+    [],
+  )
+
+  function triggerAction(withSound: boolean) {
+    if (withSound) {
+      unlockAudio()
+      playBotBeep()
+    }
     const next: Action = Math.random() < 0.5 ? 'idea' : 'note'
     setAction(next)
     if (actionTimer.current) window.clearTimeout(actionTimer.current)
     actionTimer.current = window.setTimeout(() => setAction('idle'), 2000)
   }
 
-  function handleAmpTap() {
+  function handleAmpTap(e: MouseEvent<SVGGElement> | KeyboardEvent<SVGGElement>) {
     unlockAudio()
     toggleMuted()
+    e.currentTarget.blur()
   }
 
   return (
@@ -54,6 +87,17 @@ export function Character() {
       />
 
       <svg viewBox="0 0 560 460" className="relative z-10 h-auto w-full" role="img" aria-label="Illustration of Prateek Patel at his desk, typing between two monitors">
+        <defs>
+          <linearGradient id="bezel" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#262626" />
+            <stop offset="1" stopColor="#0a0a0a" />
+          </linearGradient>
+          <linearGradient id="screenGlow" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#16224f" />
+            <stop offset="1" stopColor="#0d1640" />
+          </linearGradient>
+        </defs>
+
         {/* ground shadow */}
         <ellipse cx="300" cy="444" rx="200" ry="12" fill="#0D1640" opacity="0.08" />
 
@@ -106,12 +150,15 @@ export function Character() {
           <path d="M498 124 q13 -20 4 -32 q-2 16 -4 32 z" fill="#6E9C5E" />
         </g>
 
-        {/* ===== monitors ===== */}
+        {/* ===== monitors — angled slightly inward toward Prateek, with a
+             dropped shadow and a gradient bezel, for a bit of 3D pop ===== */}
         {/* left screen */}
-        <g>
+        <g transform="rotate(3 165 191)">
+          <ellipse cx="103" cy="271" rx="28" ry="7" fill="#0D1640" opacity="0.16" />
           <rect x="94" y="236" width="18" height="30" rx="4" fill="#8A8477" />
-          <rect x="90" y="140" width="150" height="102" rx="10" fill="#151515" />
-          <rect x="100" y="150" width="130" height="82" rx="4" fill="#0D1640" />
+          <rect x="90" y="140" width="150" height="102" rx="10" fill="url(#bezel)" />
+          <rect x="91" y="141" width="148" height="4" rx="2" fill="#3a3a3a" opacity="0.6" />
+          <rect x="100" y="150" width="130" height="82" rx="4" fill="url(#screenGlow)" />
           <g className="code-lines" opacity="0.9">
             <rect x="108" y="160" width="60" height="6" rx="3" fill="#E8862D" />
             <rect x="108" y="172" width="90" height="6" rx="3" fill="#5fd8ff" />
@@ -123,10 +170,12 @@ export function Character() {
         </g>
 
         {/* right screen */}
-        <g>
+        <g transform="rotate(-3 495 191)">
+          <ellipse cx="457" cy="271" rx="28" ry="7" fill="#0D1640" opacity="0.16" />
           <rect x="448" y="236" width="18" height="30" rx="4" fill="#8A8477" />
-          <rect x="420" y="140" width="150" height="102" rx="10" fill="#151515" />
-          <rect x="430" y="150" width="130" height="82" rx="4" fill="#0D1640" />
+          <rect x="420" y="140" width="150" height="102" rx="10" fill="url(#bezel)" />
+          <rect x="421" y="141" width="148" height="4" rx="2" fill="#3a3a3a" opacity="0.6" />
+          <rect x="430" y="150" width="130" height="82" rx="4" fill="url(#screenGlow)" />
           <g className="code-lines" opacity="0.9">
             <rect x="438" y="160" width="80" height="6" rx="3" fill="#5fd8ff" />
             <rect x="438" y="172" width="56" height="6" rx="3" fill="#E8862D" />
@@ -144,6 +193,44 @@ export function Character() {
         <rect x="46" y="396" width="16" height="36" rx="4" fill="#A77E4F" />
         <rect x="498" y="396" width="16" height="36" rx="4" fill="#A77E4F" />
 
+        {/* amplifiers — desk corners, beside each monitor. Tap either to mute/unmute all sound. */}
+        <g
+          transform="translate(30 300)"
+          onClick={handleAmpTap}
+          className="cursor-pointer"
+          role="button"
+          tabIndex={0}
+          aria-label={muted ? 'Unmute site sound' : 'Mute site sound'}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') handleAmpTap(e)
+          }}
+        >
+          <ellipse cx="11" cy="21" rx="13" ry="3" fill="#0D1640" opacity="0.12" />
+          <rect width="22" height="20" rx="4" fill="#151515" opacity={muted ? 0.35 : 1} />
+          <circle cx="7" cy="7" r="3" fill={muted ? '#6f6a5e' : '#E8862D'} />
+          <circle cx="15" cy="7" r="2" fill={muted ? '#6f6a5e' : '#5fd8ff'} />
+          <rect x="4" y="13" width="14" height="3" rx="1.5" fill="#3A3A3A" />
+          {muted && <line x1="-2" y1="22" x2="24" y2="-2" stroke="#E4372B" strokeWidth="2" strokeLinecap="round" />}
+        </g>
+        <g
+          transform="translate(512 300)"
+          onClick={handleAmpTap}
+          className="cursor-pointer"
+          role="button"
+          tabIndex={0}
+          aria-label={muted ? 'Unmute site sound' : 'Mute site sound'}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') handleAmpTap(e)
+          }}
+        >
+          <ellipse cx="11" cy="21" rx="13" ry="3" fill="#0D1640" opacity="0.12" />
+          <rect width="22" height="20" rx="4" fill="#151515" opacity={muted ? 0.35 : 1} />
+          <circle cx="7" cy="7" r="3" fill={muted ? '#6f6a5e' : '#5fd8ff'} />
+          <circle cx="15" cy="7" r="2" fill={muted ? '#6f6a5e' : '#E8862D'} />
+          <rect x="4" y="13" width="14" height="3" rx="1.5" fill="#3A3A3A" />
+          {muted && <line x1="-2" y1="22" x2="24" y2="-2" stroke="#E4372B" strokeWidth="2" strokeLinecap="round" />}
+        </g>
+
         {/* pen cup + pencils (desk, left) */}
         <g transform="translate(150 260)">
           <rect x="0" y="14" width="30" height="28" rx="5" fill="#2A2A2A" />
@@ -155,14 +242,18 @@ export function Character() {
         {/* original robot figurine — replaces a desk-toy penguin. Tap it: beep + a random idea/note moment. */}
         <g
           transform="translate(60 268)"
-          onClick={handleBotTap}
+          onClick={(e) => {
+            triggerAction(true)
+            e.currentTarget.blur()
+          }}
           className="cursor-pointer"
           role="button"
           tabIndex={0}
           aria-label="Tap the desk robot"
           onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') handleBotTap()
+            if (e.key === 'Enter' || e.key === ' ') triggerAction(true)
           }}
+          onMouseUp={(e) => e.currentTarget.blur()}
         >
           <ellipse cx="18" cy="38" rx="17" ry="4" fill="#0D1640" opacity="0.12" />
           <rect x="4" y="14" width="28" height="24" rx="9" fill="#0D1640" />
@@ -175,42 +266,6 @@ export function Character() {
           <rect x="9" y="20" width="18" height="6" rx="3" fill="#E8862D" opacity="0.85" />
           <circle cx="-2" cy="26" r="4" fill="#0D1640" />
           <circle cx="38" cy="26" r="4" fill="#0D1640" />
-        </g>
-
-        {/* tiny amplifiers flanking the robot — tap either to mute/unmute all sound */}
-        <g
-          transform="translate(14 302)"
-          onClick={handleAmpTap}
-          className="cursor-pointer"
-          role="button"
-          tabIndex={0}
-          aria-label={muted ? 'Unmute site sound' : 'Mute site sound'}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') handleAmpTap()
-          }}
-        >
-          <rect width="22" height="20" rx="4" fill="#151515" opacity={muted ? 0.35 : 1} />
-          <circle cx="7" cy="7" r="3" fill={muted ? '#6f6a5e' : '#E8862D'} />
-          <circle cx="15" cy="7" r="2" fill={muted ? '#6f6a5e' : '#5fd8ff'} />
-          <rect x="4" y="13" width="14" height="3" rx="1.5" fill="#3A3A3A" />
-          {muted && <line x1="-2" y1="22" x2="24" y2="-2" stroke="#E4372B" strokeWidth="2" strokeLinecap="round" />}
-        </g>
-        <g
-          transform="translate(110 302)"
-          onClick={handleAmpTap}
-          className="cursor-pointer"
-          role="button"
-          tabIndex={0}
-          aria-label={muted ? 'Unmute site sound' : 'Mute site sound'}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') handleAmpTap()
-          }}
-        >
-          <rect width="22" height="20" rx="4" fill="#151515" opacity={muted ? 0.35 : 1} />
-          <circle cx="7" cy="7" r="3" fill={muted ? '#6f6a5e' : '#5fd8ff'} />
-          <circle cx="15" cy="7" r="2" fill={muted ? '#6f6a5e' : '#E8862D'} />
-          <rect x="4" y="13" width="14" height="3" rx="1.5" fill="#3A3A3A" />
-          {muted && <line x1="-2" y1="22" x2="24" y2="-2" stroke="#E4372B" strokeWidth="2" strokeLinecap="round" />}
         </g>
 
         {/* small plant, desk right */}
@@ -229,8 +284,11 @@ export function Character() {
           <rect x="326" y="300" width="6" height="6" rx="1.5" />
         </g>
 
-        {/* ===== Prateek, seated, back/three-quarter view ===== */}
+        {/* ===== Prateek, seated, back/three-quarter view — facing the screens, not us ===== */}
         <g>
+          {/* soft contact shadow under the hoodie, grounding him against the desk */}
+          <ellipse cx="300" cy="308" rx="78" ry="10" fill="#0D1640" opacity="0.1" />
+
           {/* hoodie hood + shoulders/back */}
           <path
             d="M228 306
