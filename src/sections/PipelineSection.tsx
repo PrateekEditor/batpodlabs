@@ -26,7 +26,7 @@ export function PipelineSection() {
                 onClick={openBot}
                 className="inline-flex h-11 items-center gap-2 rounded-full bg-amber px-6 text-sm font-semibold text-on-amber shadow-md shadow-amber/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-amber-hover hover:shadow-lg active:translate-y-0 active:scale-95 motion-reduce:transition-none"
               >
-                Try the debugger
+                Chat with PP
               </button>
               <Link
                 to="/pipeline"

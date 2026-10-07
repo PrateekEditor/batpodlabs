@@ -17,8 +17,20 @@ export function usePath() {
   return useSyncExternalStore(subscribe, () => window.location.pathname, () => '/')
 }
 
+// The bot installs a guard so page changes can play its loading transition
+// first; without one, navigation is immediate.
+let guard: ((go: () => void) => void) | null = null
+export function setNavigateGuard(g: ((go: () => void) => void) | null) {
+  guard = g
+}
+
 export function navigate(to: string) {
   if (to === window.location.pathname) return
+  if (guard) guard(() => go(to))
+  else go(to)
+}
+
+function go(to: string) {
   window.history.pushState({}, '', to)
   window.dispatchEvent(new Event(EVENT))
   const lenis = getLenis()

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { BotFace } from './BotFace'
 
 /**
  * A looping mock of an agent workspace — the debugger takes a ticket from
@@ -30,18 +31,7 @@ const DURATIONS = [1100, 1300, 1500, 1700, 1500, 2600, 1000, 1500, 3400]
 const LAST = DURATIONS.length - 1
 
 export function Avatar({ size = 36 }: { size?: number }) {
-  return (
-    <span
-      className="relative inline-flex shrink-0 items-center justify-center rounded-[34%] bg-gradient-to-br from-sky-400 to-violet-500 shadow-sm"
-      style={{ width: size, height: size }}
-      aria-hidden
-    >
-      <span className="flex gap-[18%]" style={{ width: size * 0.5 }}>
-        <span className="aspect-square flex-1 rounded-full bg-white" />
-        <span className="aspect-square flex-1 rounded-full bg-white" />
-      </span>
-    </span>
-  )
+  return <BotFace size={size} />
 }
 
 export function Spinner() {
@@ -65,7 +55,7 @@ function Sidebar() {
     <aside className="hidden w-[190px] shrink-0 flex-col border-r border-ink/10 bg-cream-alt p-4 md:flex" aria-hidden>
       <div className="flex items-center gap-2 px-1">
         <Avatar size={22} />
-        <span className="font-display text-sm font-semibold tracking-tight text-ink">Debugger</span>
+        <span className="font-display text-sm font-semibold tracking-tight text-ink">PP</span>
       </div>
       <div className="mt-4 rounded-lg bg-ink/5 px-3 py-2 text-xs text-muted">+ New conversation</div>
       <SideLabel>Orgs</SideLabel>
@@ -112,7 +102,7 @@ export function AgentWorkspace({ compact = false }: { compact?: boolean }) {
     <div
       ref={root}
       role="img"
-      aria-label="Illustrative agent workspace: a debugger agent takes a support ticket, finds the cause in the org, drafts a fix, waits for a person to approve it, then deploys and updates the ticket."
+      aria-label="Illustrative agent workspace: PP, a Salesforce dev copilot, takes a support ticket, finds the cause in the org, drafts a fix, waits for a person to approve it, then deploys and updates the ticket."
       className="overflow-hidden rounded-2xl border border-ink/10 bg-surface shadow-xl shadow-ink/5"
     >
       {/* top bar */}
@@ -125,7 +115,7 @@ export function AgentWorkspace({ compact = false }: { compact?: boolean }) {
           </span>
           <span className="ml-2">Sandbox</span>
           <span>/</span>
-          <span className="font-medium text-ink">Debugger</span>
+          <span className="font-medium text-ink">PP</span>
         </div>
         <span className="rounded-md bg-ink/5 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider">Sample</span>
       </div>
@@ -138,8 +128,8 @@ export function AgentWorkspace({ compact = false }: { compact?: boolean }) {
           <div className="flex items-center gap-3 border-b border-ink/10 px-4 py-3">
             <Avatar />
             <div className="leading-tight">
-              <div className="text-sm font-semibold text-ink">Debugger</div>
-              <div className="text-[11px] text-muted">Watching your tracker</div>
+              <div className="text-sm font-semibold text-ink">PP</div>
+              <div className="text-[11px] text-muted">Salesforce dev copilot</div>
             </div>
           </div>
 
@@ -219,7 +209,7 @@ export function AgentWorkspace({ compact = false }: { compact?: boolean }) {
 
           {/* composer */}
           <div className="flex items-center gap-3 border-t border-ink/10 px-4 py-3" aria-hidden>
-            <span className="flex-1 text-xs text-muted">Message Debugger…</span>
+            <span className="flex-1 text-xs text-muted">Message PP…</span>
             <span className="flex h-7 w-7 items-center justify-center rounded-full bg-teal-600 text-white">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M12 19V5M5 12l7-7 7 7" />

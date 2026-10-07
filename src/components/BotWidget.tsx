@@ -1,11 +1,17 @@
-import { useCallback, useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react'
 import { Avatar, Check, Spinner } from './AgentWorkspace'
+import { BotFace } from './BotFace'
+import { navigate, setNavigateGuard, usePath } from '../lib/router'
 
 /**
- * The Debugger bot — a floating chat, bottom-right on every page, styled like
- * the demo window. Type a ticket (or pick one) and it plays a scripted
+ * PP — a floating Salesforce dev copilot, bottom-right on every page, styled
+ * like the demo window. Type a ticket (or pick one) and it plays a scripted
  * debug → fix → review → deploy run. It is a DEMO: nothing here calls a model
  * or touches an org; the point is to show what the real thing would do.
+ *
+ * PP is also the site's loader: on first load it boots in the middle of the
+ * screen and then floats down to the corner; on every page change it flies to
+ * the middle, the page swaps underneath, and it docks again, ready to chat.
  */
 
 type Step =
@@ -102,14 +108,41 @@ type Phase = 'idle' | 'playing' | 'review'
 const GREETING: Msg = {
   id: 0,
   kind: 'agent',
-  text: 'Hi — describe a Salesforce ticket, or pick one below, and I’ll show how I’d debug and fix it.',
+  text: 'Hi, I’m PP, a Salesforce dev copilot. Describe a ticket, or pick one below, and I’ll show how I’d debug and fix it.',
 }
 
 export function openBot() {
   window.dispatchEvent(new Event('bot:open'))
 }
 
+type Mode = 'boot' | 'idle' | 'cover'
+const BOOT_MIN = 1100
+const BOOT_MAX = 4000
+const FLY_OUT = 350 // time for the cover to settle before the page swaps
+const FLY_BACK = 600 // time for PP to dock again after the swap
+
+const margin = () => (window.innerWidth >= 640 ? 24 : 16)
+/** Offset that moves the docked orb to the centre of the viewport. */
+function centreOffset() {
+  const m = margin()
+  const w = document.documentElement.clientWidth
+  const h = window.innerHeight
+  return { x: w / 2 - (w - m - 28), y: h / 2 - (h - m - 28) }
+}
+
 export function BotWidget() {
+  const path = usePath()
+  const prefersReduce = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const [mode, setMode] = useState<Mode>(prefersReduce ? 'idle' : 'boot')
+  const [instant, setInstant] = useState(false)
+  const [off, setOff] = useState(() => (typeof window === 'undefined' ? { x: 0, y: 0 } : centreOffset()))
+  const [hint, setHint] = useState(false)
+  const [tapped, setTapped] = useState(false)
+  const navTimers = useRef<number[]>([])
+  const busy = useRef(false)
+  const viaGuard = useRef(false)
+  const lastPath = useRef(path)
+  const hinted = useRef(false)
   const [open, setOpen] = useState(false)
   const [msgs, setMsgs] = useState<Msg[]>([GREETING])
   const [phase, setPhase] = useState<Phase>('idle')
@@ -142,8 +175,118 @@ export function BotWidget() {
   }, [])
 
   useEffect(() => {
-    if (open) window.setTimeout(() => input.current?.focus(), 50)
+    if (open) {
+      setHint(false)
+      window.setTimeout(() => input.current?.focus(), 50)
+    }
   }, [open])
+
+  const after = (ms: number, fn: () => void) => {
+    navTimers.current.push(window.setTimeout(fn, ms))
+  }
+
+  // keep the "centre" target right if the window changes size mid-transition
+  useEffect(() => {
+    const onResize = () => setOff(centreOffset())
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [])
+
+  // boot: wait for the page, fonts and a short minimum, then float to the corner
+  useEffect(() => {
+    if (mode !== 'boot') return
+    const started = Date.now()
+    let done = false
+    const finish = () => {
+      if (done) return
+      done = true
+      setMode('idle')
+    }
+    const ready = Promise.all([
+      document.readyState === 'complete' ? Promise.resolve() : new Promise<void>((r) => window.addEventListener('load', () => r(), { once: true })),
+      document.fonts?.ready ?? Promise.resolve(),
+    ])
+    ready.then(() => {
+      const wait = Math.max(0, BOOT_MIN - (Date.now() - started))
+      navTimers.current.push(window.setTimeout(finish, wait))
+    })
+    navTimers.current.push(window.setTimeout(finish, BOOT_MAX))
+  }, [mode])
+
+  // page changes: fly to the centre, swap the page, dock again
+  useEffect(() => {
+    if (prefersReduce) {
+      setNavigateGuard(null)
+      return
+    }
+    setNavigateGuard((go) => {
+      if (busy.current) return
+      busy.current = true
+      viaGuard.current = true
+      setOpen(false)
+      setOff(centreOffset())
+      setMode('cover')
+      after(FLY_OUT, go)
+      after(FLY_OUT + FLY_BACK, () => {
+        setMode('idle')
+        busy.current = false
+      })
+    })
+    return () => setNavigateGuard(null)
+  }, [prefersReduce])
+
+  // back / forward buttons change the path without the guard: cover instantly
+  useLayoutEffect(() => {
+    if (path === lastPath.current) return
+    lastPath.current = path
+    if (viaGuard.current) {
+      viaGuard.current = false
+      return
+    }
+    if (prefersReduce) return
+    busy.current = true
+    setOpen(false)
+    setOff(centreOffset())
+    setInstant(true)
+    setMode('cover')
+    after(500, () => {
+      setInstant(false)
+      setMode('idle')
+      busy.current = false
+    })
+  }, [path, prefersReduce])
+
+  // a one-time nudge after PP lands, for visitors who haven't found it
+  useEffect(() => {
+    if (mode !== 'idle' || hinted.current) return
+    hinted.current = true
+    let seen = false
+    try {
+      seen = sessionStorage.getItem('pp-hint') === '1'
+      sessionStorage.setItem('pp-hint', '1')
+    } catch {
+      /* storage can be blocked; just show it */
+    }
+    if (seen) return
+    navTimers.current.push(window.setTimeout(() => setHint(true), 1600))
+    navTimers.current.push(window.setTimeout(() => setHint(false), 8000))
+  }, [mode])
+
+  useEffect(() => {
+    const t = navTimers.current
+    return () => t.forEach(window.clearTimeout)
+  }, [])
+
+  const tap = () => {
+    setTapped(true)
+    window.setTimeout(() => setTapped(false), 700)
+    setOpen((v) => !v)
+  }
+
+  const seeDetails = () => {
+    setOpen(false)
+    navigate('/pipeline')
+  }
 
   useEffect(() => {
     scroller.current?.scrollTo({ top: scroller.current.scrollHeight, behavior: reduce ? 'auto' : 'smooth' })
@@ -197,23 +340,50 @@ export function BotWidget() {
 
   const started = msgs.length > 1
 
+  const away = mode !== 'idle'
+
   return (
-    <div className="fixed bottom-4 right-4 z-40 flex flex-col items-end gap-3 sm:bottom-6 sm:right-6" onKeyDown={onKey}>
-      {open && (
+    <>
+      {/* loading cover: sits under PP while it boots or while the page swaps */}
+      <div
+        aria-hidden
+        className={`fixed inset-0 z-[60] bg-cream ${mode === 'boot' ? 'transition-opacity duration-500' : 'transition-opacity duration-200'} ${away ? 'opacity-100' : 'pointer-events-none opacity-0'} ${instant ? '!transition-none' : ''}`}
+      >
+        <p className="absolute left-0 right-0 text-center text-sm font-medium tracking-wide text-muted" style={{ top: 'calc(50% + 86px)' }}>
+          {mode === 'boot' ? 'Booting PP…' : 'Loading…'}
+        </p>
+      </div>
+      <span className="sr-only" role="status">{mode === 'boot' ? 'Loading the site' : ''}</span>
+
+    <div className="fixed bottom-4 right-4 z-[70] flex flex-col items-end gap-3 sm:bottom-6 sm:right-6" onKeyDown={onKey}>
+      {open && !away && (
         <div
           role="dialog"
-          aria-label="Debugger demo chat"
+          aria-label="PP, Salesforce dev copilot (demo chat)"
           className="flex h-[min(560px,calc(100dvh-7.5rem))] w-[min(380px,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-ink/10 bg-surface shadow-2xl shadow-ink/20 msg-in"
         >
           <div className="flex items-center gap-3 border-b border-ink/10 px-4 py-3">
             <Avatar />
             <div className="min-w-0 flex-1 leading-tight">
-              <div className="text-sm font-semibold text-ink">Debugger</div>
-              <div className="text-[11px] text-muted">Demo · sample org</div>
+              <div className="text-sm font-semibold text-ink">PP</div>
+              <div className="truncate text-[11px] text-muted">Salesforce dev copilot · demo</div>
             </div>
             {started && (
               <button type="button" onClick={reset} className="rounded-md px-2 py-1 text-[11px] font-medium text-muted transition-colors hover:bg-ink/5 hover:text-ink">
                 New ticket
+              </button>
+            )}
+            {path.replace(/\/+$/, '') !== '/pipeline' && (
+              <button
+                type="button"
+                onClick={seeDetails}
+                title="See how the full pipeline works"
+                className="inline-flex shrink-0 items-center gap-1 rounded-full border border-amber/50 px-2.5 py-1 text-[11px] font-semibold text-amber-text transition-colors hover:bg-amber/10"
+              >
+                Details
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
               </button>
             )}
             <button
@@ -358,24 +528,45 @@ export function BotWidget() {
         </div>
       )}
 
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        aria-expanded={open}
-        aria-label={open ? 'Close the debugger demo' : 'Open the debugger demo'}
-        className="group inline-flex h-14 items-center gap-2.5 rounded-full bg-navy pl-2 pr-2 text-on-navy shadow-xl shadow-ink/25 ring-2 ring-surface transition-all duration-200 hover:-translate-y-0.5 active:translate-y-0 active:scale-95 motion-reduce:transition-none sm:pr-5"
-      >
-        {open ? (
-          <span className="flex h-10 w-10 items-center justify-center" aria-hidden>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
-              <path d="M6 6l12 12M18 6L6 18" />
-            </svg>
-          </span>
-        ) : (
-          <Avatar size={40} />
-        )}
-        <span className="hidden text-sm font-semibold sm:inline">{open ? 'Close' : 'Try the debugger'}</span>
-      </button>
+      <div className="flex items-center gap-3">
+        {/* greeting nudge / label */}
+        <div
+          className={`hidden max-w-[220px] rounded-2xl rounded-br-md border border-ink/10 bg-surface px-3.5 py-2 text-xs font-medium text-ink shadow-lg shadow-ink/10 transition-all duration-300 sm:block ${hint && !open && !away ? 'translate-x-0 opacity-100' : 'pointer-events-none translate-x-2 opacity-0'}`}
+          aria-hidden={!hint}
+        >
+          Hi, I’m PP. Give me a Salesforce ticket to fix.
+        </div>
+
+        <div
+          className="relative h-14 w-14"
+          style={{
+            transform: away ? `translate(${off.x}px, ${off.y}px) scale(2.4)` : 'translate(0,0) scale(1)',
+            transition: instant || prefersReduce ? 'none' : mode === 'boot' ? 'transform 800ms cubic-bezier(0.34, 1.3, 0.5, 1)' : 'transform 600ms cubic-bezier(0.34, 1.3, 0.5, 1)',
+          }}
+        >
+          <div className={away || open ? '' : 'bot-float'}>
+            <button
+              type="button"
+              onClick={tap}
+              disabled={away}
+              tabIndex={away ? -1 : 0}
+              aria-expanded={open}
+              aria-label={open ? 'Close the PP demo chat' : 'Open the PP demo chat'}
+              className={`block rounded-[30%] outline-offset-4 transition-transform duration-200 hover:scale-110 disabled:cursor-default ${tapped ? 'bot-squish' : ''}`}
+            >
+              <BotFace size={56} happy={tapped} scan={away} />
+              {open && !away && (
+                <span className="absolute -left-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-navy text-on-navy ring-2 ring-surface" aria-hidden>
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.4" strokeLinecap="round">
+                    <path d="M6 6l12 12M18 6L6 18" />
+                  </svg>
+                </span>
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
+    </>
   )
 }

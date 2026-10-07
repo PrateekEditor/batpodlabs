@@ -269,6 +269,27 @@ svg [role="button"]:focus-visible {
   border-radius: 6px;
 }
 
+/* PP the bot: floats gently, squishes when poked */
+@keyframes bot-float {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-6px) rotate(2deg); }
+}
+.bot-float {
+  animation: bot-float 3.4s ease-in-out infinite;
+}
+@keyframes bot-squish {
+  0% { transform: scale(1, 1); }
+  30% { transform: scale(1.14, 0.84); }
+  60% { transform: scale(0.94, 1.1); }
+  100% { transform: scale(1, 1); }
+}
+.bot-squish {
+  animation: bot-squish 0.45s ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .bot-float, .bot-squish { animation: none; }
+}
+
 /* Agent-workspace mock: messages slide in, typing dots bounce */
 @keyframes msg-in {
   from { opacity: 0; transform: translateY(8px); }

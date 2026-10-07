@@ -1,5 +1,6 @@
 import { Suspense, lazy } from 'react'
 import { HeroMascot } from '../components/HeroMascot'
+import { BotFace } from '../components/BotFace'
 import { CONTACT_LINKS } from '../data/links'
 
 // Experimental: visit with ?three=1 in the URL to preview the Spline-exported
@@ -55,7 +56,7 @@ export function HeroSection() {
 
       <div className="order-1 md:order-2">
         {showThreeRoom ? (
-          <Suspense fallback={<div className="h-[520px] w-full animate-pulse rounded-2xl bg-ink/5" />}>
+          <Suspense fallback={<div className="flex h-[520px] w-full items-center justify-center rounded-2xl bg-ink/5"><BotFace size={96} scan /></div>}>
             <ThreeRoom />
           </Suspense>
         ) : (
