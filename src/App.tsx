@@ -1,13 +1,11 @@
 import { useLenis } from './lib/useLenis'
-import { useAudioUnlock } from './lib/useAudioUnlock'
 import { HeroSection } from './sections/HeroSection'
+import { PipelineSection } from './sections/PipelineSection'
 import { SkillsSection } from './sections/SkillsSection'
 import { ContactSection } from './sections/ContactSection'
-import { MuteButton } from './components/MuteButton'
 
 function App() {
   useLenis()
-  useAudioUnlock()
 
   return (
     <main className="relative min-h-screen w-full bg-cream">
@@ -16,7 +14,6 @@ function App() {
           Prateek Patel
         </span>
         <div className="flex items-center gap-2 sm:gap-3">
-          <MuteButton />
           <a
             href="/Prateek_Patel_Resume.pdf"
             download
@@ -33,6 +30,7 @@ function App() {
       </header>
 
       <HeroSection />
+      <PipelineSection />
       <SkillsSection />
       <ContactSection />
     </main>

@@ -4,7 +4,7 @@ const YEAR = new Date().getFullYear()
 
 export function ContactSection() {
   return (
-    <footer className="border-t border-navy/10">
+    <footer id="contact" className="border-t border-navy/10">
       <div className="mx-auto flex w-full max-w-6xl flex-col items-start gap-6 px-6 py-14 sm:flex-row sm:items-center sm:justify-between sm:px-10">
         <div>
           <h2 className="text-2xl font-bold text-ink">Let&apos;s connect</h2>

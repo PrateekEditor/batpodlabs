@@ -1,7 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent } from 'react'
 import { Mascot } from './PageMascot'
 import { SKILL_GROUPS } from '../data/skills'
-import { playBotBeep, unlockAudio } from '../lib/audio'
 
 type Sticker = { title: string; items: string[]; bg: string; fg: string; tilt: number; icon: string; fill?: boolean }
 
@@ -136,13 +135,7 @@ export function HeroMascot() {
       </svg>
 
       {/* the character */}
-      <div
-        className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2"
-        onClickCapture={() => {
-          unlockAudio()
-          playBotBeep()
-        }}
-      >
+      <div className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2">
         <Mascot
           directions="/mascots/prateek-directions.webp"
           reactions="/mascots/prateek-reactions.webp"

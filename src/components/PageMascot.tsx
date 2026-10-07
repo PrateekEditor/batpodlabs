@@ -44,6 +44,11 @@ const HYSTERESIS = 0.12
 const DEAD_ZONE = 70
 
 const PAYOFFS: Reaction[] = ['heart', 'sparkle', 'delighted']
+
+// When there is no cursor to watch (phones, tablets, or a mouse left alone) the
+// character looks around and makes the odd face on its own.
+const IDLE_MS = 4000
+const WANDER_FACES: Reaction[] = ['heart', 'sparkle', 'wink', 'delighted', 'bashful', 'sleepy']
 const BOOP_PAYOFF = 120
 const BOOP_END = 560
 const SQUASH_MS = 420
@@ -95,6 +100,9 @@ export function Mascot(props: MascotProps) {
   const boopsRef = useRef({ count: 0, at: 0 })
   const [direction, setDirection] = useState<Direction>('center')
   const [reaction, setReaction] = useState<Reaction | null>(null)
+  const reactionRef = useRef<Reaction | null>(null)
+  reactionRef.current = reaction
+  const lastMoveRef = useRef(0)
 
   useEffect(() => {
     if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
@@ -132,6 +140,7 @@ export function Mascot(props: MascotProps) {
 
     const onPointerMove = (event: PointerEvent) => {
       pointer = { x: event.clientX, y: event.clientY }
+      lastMoveRef.current = Date.now()
       aim()
     }
 
@@ -148,6 +157,29 @@ export function Mascot(props: MascotProps) {
     return () => {
       timersRef.current.forEach(window.clearTimeout)
     }
+  }, [])
+
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return
+    }
+    const hasCursor = window.matchMedia('(hover: hover) and (pointer: fine)').matches
+    let timer = 0
+
+    const wander = () => {
+      const idle = !hasCursor || Date.now() - lastMoveRef.current > IDLE_MS
+      if (idle) {
+        const others = DIRECTIONS.filter((d) => d !== 'center')
+        setDirection(Math.random() < 0.25 ? 'center' : others[Math.floor(Math.random() * others.length)])
+        if (Math.random() < 0.22 && reactionRef.current === null) {
+          setReaction(WANDER_FACES[Math.floor(Math.random() * WANDER_FACES.length)])
+          timersRef.current.push(window.setTimeout(() => setReaction(null), 1100))
+        }
+      }
+      timer = window.setTimeout(wander, 1300 + Math.random() * 1500)
+    }
+    timer = window.setTimeout(wander, 1500)
+    return () => window.clearTimeout(timer)
   }, [])
 
   const boop = () => {
