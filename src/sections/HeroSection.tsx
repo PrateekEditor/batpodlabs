@@ -14,7 +14,7 @@ export function HeroSection() {
   return (
     <section className="relative mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-10 px-6 pb-16 pt-28 sm:px-10 sm:pt-36 md:grid-cols-2 md:gap-6 md:pb-24">
       <div className="order-2 flex flex-col items-start gap-5 md:order-1">
-        <span className="inline-block rounded-full bg-navy px-4 py-1.5 text-sm font-semibold text-cream">
+        <span className="inline-block rounded-full bg-navy px-4 py-1.5 text-sm font-semibold text-on-navy">
           Salesforce Developer + AI Automation Engineer
         </span>
         <h1 className="text-5xl font-bold leading-[1.05] tracking-tight text-ink sm:text-6xl">
@@ -33,7 +33,7 @@ export function HeroSection() {
         <div className="mt-2 flex flex-wrap items-center gap-3">
           <a
             href="#skills"
-            className="inline-flex h-11 items-center gap-2 rounded-full bg-amber px-6 text-sm font-semibold text-navy shadow-md shadow-amber/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-amber-hover hover:shadow-lg active:translate-y-0 active:scale-95 motion-reduce:transition-none"
+            className="inline-flex h-11 items-center gap-2 rounded-full bg-amber px-6 text-sm font-semibold text-on-amber shadow-md shadow-amber/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-amber-hover hover:shadow-lg active:translate-y-0 active:scale-95 motion-reduce:transition-none"
           >
             See my skills
           </a>
@@ -43,7 +43,7 @@ export function HeroSection() {
               href={link.url}
               target="_blank"
               rel="noreferrer"
-              className="group relative inline-flex h-11 items-center gap-2 rounded-full border border-navy/15 px-5 text-sm font-medium text-ink transition-colors duration-200 hover:border-amber hover:text-amber-text"
+              className="group relative inline-flex h-11 items-center gap-2 rounded-full border border-ink/15 px-5 text-sm font-medium text-ink transition-colors duration-200 hover:border-amber hover:text-amber-text"
             >
               <span className="relative after:absolute after:-bottom-0.5 after:left-0 after:h-px after:w-0 after:bg-amber after:transition-all after:duration-200 group-hover:after:w-full">
                 {link.label}
@@ -55,7 +55,7 @@ export function HeroSection() {
 
       <div className="order-1 md:order-2">
         {showThreeRoom ? (
-          <Suspense fallback={<div className="h-[520px] w-full animate-pulse rounded-2xl bg-navy/5" />}>
+          <Suspense fallback={<div className="h-[520px] w-full animate-pulse rounded-2xl bg-ink/5" />}>
             <ThreeRoom />
           </Suspense>
         ) : (

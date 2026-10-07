@@ -3,7 +3,10 @@
 @theme {
   --color-cream: #f2e9d8;
   --color-cream-alt: #faf5ea;
+  --color-surface: #ffffff;
   --color-navy: #0d1640;
+  --color-on-navy: #f2e9d8;
+  --color-on-amber: #0d1640;
   --color-navy-alt: #16213e;
   --color-amber: #e8862d;
   --color-amber-hover: #f2a050;
@@ -15,8 +18,27 @@
   --font-sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
+/* Dark mode: same token names, different values — every bg-cream / text-ink /
+   bg-navy class in the app follows. "navy" is the strong-surface colour
+   (buttons, pills, popovers); on-navy / on-amber are the text colours that
+   sit on it. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 :root {
   color-scheme: light;
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-cream: #0b1020;
+  --color-cream-alt: #121a33;
+  --color-surface: #172042;
+  --color-navy: #26336b;
+  --color-ink: #e8ecf8;
+  --color-muted: #9aa3bd;
+  --color-amber-text: #f2a050;
+}
+body {
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 html, body, #root {
@@ -245,6 +267,30 @@ svg [role="button"]:focus-visible {
   outline: 2px solid #e8862d;
   outline-offset: 3px;
   border-radius: 6px;
+}
+
+/* Agent-workspace mock: messages slide in, typing dots bounce */
+@keyframes msg-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.msg-in {
+  animation: msg-in 0.35s ease-out both;
+}
+@keyframes typing-bounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-3px); opacity: 1; }
+}
+.typing-dot {
+  display: block;
+  width: 5px;
+  height: 5px;
+  border-radius: 9999px;
+  background: var(--color-muted);
+  animation: typing-bounce 1s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .msg-in, .typing-dot { animation: none; }
 }
 
 /* Scroll-reveal for skill groups / cards */

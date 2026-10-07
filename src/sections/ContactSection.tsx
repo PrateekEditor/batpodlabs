@@ -4,7 +4,7 @@ const YEAR = new Date().getFullYear()
 
 export function ContactSection() {
   return (
-    <footer id="contact" className="border-t border-navy/10">
+    <footer id="contact" className="border-t border-ink/10">
       <div className="mx-auto flex w-full max-w-6xl flex-col items-start gap-6 px-6 py-14 sm:flex-row sm:items-center sm:justify-between sm:px-10">
         <div>
           <h2 className="text-2xl font-bold text-ink">Let&apos;s connect</h2>
@@ -20,7 +20,7 @@ export function ContactSection() {
               href={link.url}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex h-11 items-center gap-2 rounded-full bg-navy px-6 text-sm font-semibold text-cream transition-all duration-200 hover:-translate-y-0.5 hover:bg-amber hover:text-navy active:translate-y-0 active:scale-95 motion-reduce:transition-none"
+              className="inline-flex h-11 items-center gap-2 rounded-full bg-navy px-6 text-sm font-semibold text-on-navy transition-all duration-200 hover:-translate-y-0.5 hover:bg-amber hover:text-on-amber active:translate-y-0 active:scale-95 motion-reduce:transition-none"
             >
               {link.label}
             </a>

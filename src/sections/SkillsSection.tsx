@@ -6,7 +6,7 @@ function SkillCard({ title, items, index }: { title: string; items: string[]; in
   return (
     <div
       ref={ref}
-      className="reveal rounded-2xl border border-navy/10 bg-cream-alt p-5"
+      className="reveal rounded-2xl border border-ink/10 bg-cream-alt p-5"
       style={{ transitionDelay: `${(index % 6) * 60}ms` }}
     >
       <h3 className="text-sm font-semibold uppercase tracking-wide text-amber-text">{title}</h3>
@@ -14,7 +14,7 @@ function SkillCard({ title, items, index }: { title: string; items: string[]; in
         {items.map((item) => (
           <span
             key={item}
-            className="rounded-full bg-navy/5 px-3 py-1 text-xs font-medium text-ink transition-colors hover:bg-amber/15 hover:text-amber-text"
+            className="rounded-full bg-ink/5 px-3 py-1 text-xs font-medium text-ink transition-colors hover:bg-amber/15 hover:text-amber-text"
           >
             {item}
           </span>
@@ -40,11 +40,11 @@ export function SkillsSection() {
         ))}
       </div>
 
-      <div ref={certRef} className="reveal mt-10 rounded-2xl border border-navy/10 bg-navy p-6">
+      <div ref={certRef} className="reveal mt-10 rounded-2xl border border-ink/10 bg-navy p-6">
         <h3 className="text-sm font-semibold uppercase tracking-wide text-amber">Certifications</h3>
         <div className="mt-3 flex flex-wrap gap-2">
           {CERTIFICATIONS.map((cert) => (
-            <span key={cert} className="rounded-full bg-cream/10 px-3 py-1 text-xs font-medium text-cream">
+            <span key={cert} className="rounded-full bg-on-navy/10 px-3 py-1 text-xs font-medium text-on-navy">
               {cert}
             </span>
           ))}

@@ -129,9 +129,11 @@ export function HeroMascot() {
     <div ref={wrap} className="relative mx-auto aspect-square w-full max-w-[540px]" style={{ touchAction: 'manipulation' }}>
       {/* warm glow + the faint orbit rails */}
       <div className="absolute left-1/2 top-[52%] aspect-square w-[62%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-amber/20 blur-3xl" aria-hidden />
-      <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full" aria-hidden>
-        <ellipse cx="50" cy="54.5" rx="34" ry="17" fill="none" stroke="#0D1640" strokeOpacity="0.1" strokeWidth="0.3" strokeDasharray="1.2 1.6" />
-        <ellipse cx="50" cy="54.5" rx="42" ry="21" fill="none" stroke="#0D1640" strokeOpacity="0.07" strokeWidth="0.3" strokeDasharray="1.2 1.6" />
+      {/* a soft disc behind the character so dark hair reads in dark mode too */}
+      <div className="absolute left-1/2 top-[54%] aspect-square w-[58%] -translate-x-1/2 -translate-y-1/2 rounded-full border border-ink/10 bg-surface/70" aria-hidden />
+      <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full text-ink" aria-hidden>
+        <ellipse cx="50" cy="54.5" rx="34" ry="17" fill="none" stroke="currentColor" strokeOpacity="0.14" strokeWidth="0.3" strokeDasharray="1.2 1.6" />
+        <ellipse cx="50" cy="54.5" rx="42" ry="21" fill="none" stroke="currentColor" strokeOpacity="0.09" strokeWidth="0.3" strokeDasharray="1.2 1.6" />
       </svg>
 
       {/* the character */}
@@ -181,7 +183,7 @@ export function HeroMascot() {
 
             {active === i && (
               <div
-                className="pointer-events-none absolute left-1/2 top-full z-10 mt-3 w-[210px] -translate-x-1/2 whitespace-normal rounded-xl bg-navy px-3 py-2.5 text-left text-[11.5px] font-medium leading-snug text-cream shadow-xl"
+                className="pointer-events-none absolute left-1/2 top-full z-10 mt-3 w-[210px] -translate-x-1/2 whitespace-normal rounded-xl bg-navy px-3 py-2.5 text-left text-[11.5px] font-medium leading-snug text-on-navy shadow-xl"
                 style={{ fontFamily: 'var(--font-sans)' }}
               >
                 {s.items.join(' · ')}
