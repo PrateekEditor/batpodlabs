@@ -4,7 +4,6 @@ import { HeroSection } from './sections/HeroSection'
 import { SkillsSection } from './sections/SkillsSection'
 import { ContactSection } from './sections/ContactSection'
 import { MuteButton } from './components/MuteButton'
-import { DevMascot } from './components/DevMascot'
 
 function App() {
   useLenis()
@@ -36,7 +35,6 @@ function App() {
       <HeroSection />
       <SkillsSection />
       <ContactSection />
-      <DevMascot />
     </main>
   )
 }

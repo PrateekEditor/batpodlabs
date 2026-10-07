@@ -1,9 +1,9 @@
 import { Suspense, lazy } from 'react'
-import { Character } from '../components/Character'
+import { HeroMascot } from '../components/HeroMascot'
 import { CONTACT_LINKS } from '../data/links'
 
 // Experimental: visit with ?three=1 in the URL to preview the Spline-exported
-// 3D room instead of the regular hand-drawn illustration. Lazy-loaded so
+// 3D room instead of the regular hero mascot. Lazy-loaded so
 // Three.js/fiber/drei (and the 18MB model) never touch the bundle or network
 // for a normal visitor — only fetched if that query param is present.
 // Remove this whole path once a direction is picked.
@@ -59,7 +59,7 @@ export function HeroSection() {
             <ThreeRoom />
           </Suspense>
         ) : (
-          <Character />
+          <HeroMascot />
         )}
       </div>
     </section>
