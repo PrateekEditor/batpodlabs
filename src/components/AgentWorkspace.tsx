@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react'
-import { BotFace } from './BotFace'
 
 /**
  * A looping mock of an agent workspace — the debugger takes a ticket from
@@ -31,7 +30,27 @@ const DURATIONS = [1100, 1300, 1500, 1700, 1500, 2600, 1000, 1500, 3400]
 const LAST = DURATIONS.length - 1
 
 export function Avatar({ size = 36 }: { size?: number }) {
-  return <BotFace size={size} />
+  // PP wears Prateek's face: the centre cell of the direction sheet, cropped round.
+  return (
+    <span
+      aria-hidden
+      className="inline-block shrink-0 overflow-hidden rounded-full bg-amber/25 ring-1 ring-ink/10"
+      style={{ width: size, height: size }}
+    >
+      <span
+        className="block"
+        style={{
+          width: size * 1.45,
+          height: size * 1.45,
+          marginLeft: -size * 0.225,
+          marginTop: -size * 0.12,
+          backgroundImage: 'url(/mascots/prateek-directions.webp)',
+          backgroundSize: '300% 300%',
+          backgroundPosition: '50% 50%',
+        }}
+      />
+    </span>
+  )
 }
 
 export function Spinner() {

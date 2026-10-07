@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react'
 import { Avatar, Check, Spinner } from './AgentWorkspace'
-import { BotFace } from './BotFace'
+import { Mascot } from './PageMascot'
 import { navigate, setNavigateGuard, usePath } from '../lib/router'
 
 /**
@@ -137,7 +137,6 @@ export function BotWidget() {
   const [instant, setInstant] = useState(false)
   const [off, setOff] = useState(() => (typeof window === 'undefined' ? { x: 0, y: 0 } : centreOffset()))
   const [hint, setHint] = useState(false)
-  const [tapped, setTapped] = useState(false)
   const navTimers = useRef<number[]>([])
   const busy = useRef(false)
   const viaGuard = useRef(false)
@@ -205,6 +204,14 @@ export function BotWidget() {
     const ready = Promise.all([
       document.readyState === 'complete' ? Promise.resolve() : new Promise<void>((r) => window.addEventListener('load', () => r(), { once: true })),
       document.fonts?.ready ?? Promise.resolve(),
+      ...['/mascots/prateek-directions.webp', '/mascots/prateek-reactions.webp'].map(
+        (src) =>
+          new Promise<void>((r) => {
+            const img = new Image()
+            img.onload = img.onerror = () => r()
+            img.src = src
+          }),
+      ),
     ])
     ready.then(() => {
       const wait = Math.max(0, BOOT_MIN - (Date.now() - started))
@@ -276,12 +283,6 @@ export function BotWidget() {
     const t = navTimers.current
     return () => t.forEach(window.clearTimeout)
   }, [])
-
-  const tap = () => {
-    setTapped(true)
-    window.setTimeout(() => setTapped(false), 700)
-    setOpen((v) => !v)
-  }
 
   const seeDetails = () => {
     setOpen(false)
@@ -545,24 +546,30 @@ export function BotWidget() {
           }}
         >
           <div className={away || open ? '' : 'bot-float'}>
-            <button
-              type="button"
-              onClick={tap}
-              disabled={away}
-              tabIndex={away ? -1 : 0}
-              aria-expanded={open}
-              aria-label={open ? 'Close the PP demo chat' : 'Open the PP demo chat'}
-              className={`block rounded-[30%] outline-offset-4 transition-transform duration-200 hover:scale-110 disabled:cursor-default ${tapped ? 'bot-squish' : ''}`}
-            >
-              <BotFace size={56} happy={tapped} scan={away} />
+            <div className="relative h-14 w-14">
+              <div className="h-14 w-14 overflow-hidden rounded-full bg-surface shadow-xl shadow-ink/25 ring-2 ring-amber">
+                <div style={{ marginLeft: -5, marginTop: 1 }}>
+                  <Mascot
+                    directions="/mascots/prateek-directions.webp"
+                    reactions="/mascots/prateek-reactions.webp"
+                    size={66}
+                    label="PP"
+                    scan={away}
+                    disabled={away}
+                    expanded={open}
+                    ariaLabel={open ? 'Close the PP demo chat' : 'Open the PP demo chat'}
+                    onPress={() => setOpen((v) => !v)}
+                  />
+                </div>
+              </div>
               {open && !away && (
-                <span className="absolute -left-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-navy text-on-navy ring-2 ring-surface" aria-hidden>
+                <span className="pointer-events-none absolute -left-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-navy text-on-navy ring-2 ring-surface" aria-hidden>
                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.4" strokeLinecap="round">
                     <path d="M6 6l12 12M18 6L6 18" />
                   </svg>
                 </span>
               )}
-            </button>
+            </div>
           </div>
         </div>
       </div>

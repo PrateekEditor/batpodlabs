@@ -89,10 +89,20 @@ export type MascotProps = {
   className?: string
   /** What a screen reader calls it. */
   label?: string
+  /** Full accessible name; replaces the default "Boop the …". */
+  ariaLabel?: string
+  /** Extra action on click, on top of the boop reaction. */
+  onPress?: () => void
+  /** Look left and right on a loop, like it is busy loading. */
+  scan?: boolean
+  disabled?: boolean
+  expanded?: boolean
 }
 
 export function Mascot(props: MascotProps) {
-  const { directions, reactions, size = 140, className, label = 'mascot' } = props
+  const { directions, reactions, size = 140, className, label = 'mascot', ariaLabel, onPress, scan = false, disabled = false, expanded } = props
+  const scanRef = useRef(scan)
+  scanRef.current = scan
 
   const buttonRef = useRef<HTMLButtonElement>(null)
   const squashRef = useRef<HTMLSpanElement>(null)
@@ -114,7 +124,7 @@ export function Mascot(props: MascotProps) {
 
     const aim = () => {
       const button = buttonRef.current
-      if (!button || !pointer) {
+      if (!button || !pointer || scanRef.current) {
         return
       }
 
@@ -167,6 +177,11 @@ export function Mascot(props: MascotProps) {
     let timer = 0
 
     const wander = () => {
+      if (scanRef.current) {
+        setDirection((d) => (d === 'left' ? 'right' : 'left'))
+        timer = window.setTimeout(wander, 420)
+        return
+      }
       const idle = !hasCursor || Date.now() - lastMoveRef.current > IDLE_MS
       if (idle) {
         const others = DIRECTIONS.filter((d) => d !== 'center')
@@ -183,6 +198,7 @@ export function Mascot(props: MascotProps) {
   }, [])
 
   const boop = () => {
+    onPress?.()
     timersRef.current.forEach(window.clearTimeout)
     timersRef.current = []
 
@@ -220,7 +236,10 @@ export function Mascot(props: MascotProps) {
       ref={buttonRef}
       type="button"
       onClick={boop}
-      aria-label={`Boop the ${label}`}
+      disabled={disabled}
+      tabIndex={disabled ? -1 : undefined}
+      aria-expanded={expanded}
+      aria-label={ariaLabel ?? `Boop the ${label}`}
       className={className}
       style={{
         position: 'relative',
@@ -232,7 +251,7 @@ export function Mascot(props: MascotProps) {
         border: 0,
         background: 'transparent',
         appearance: 'none',
-        cursor: 'pointer',
+        cursor: disabled ? 'default' : 'pointer',
         userSelect: 'none',
       }}
     >
