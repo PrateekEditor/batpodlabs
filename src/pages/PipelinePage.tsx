@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { AgentWorkspace } from '../components/AgentWorkspace'
 import { PipelineFlow } from '../components/PipelineFlow'
 import { ContactSection } from '../sections/ContactSection'
+import { openBot } from '../components/BotWidget'
 import { Link } from '../lib/router'
 import { useReveal } from '../lib/useReveal'
 
@@ -63,7 +64,16 @@ export function PipelinePage() {
             person approving every change.
           </p>
         </div>
-        <div className="mt-10">
+        <div className="mt-6">
+          <button
+            type="button"
+            onClick={openBot}
+            className="inline-flex h-11 items-center gap-2 rounded-full bg-amber px-6 text-sm font-semibold text-on-amber shadow-md shadow-amber/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-amber-hover active:translate-y-0 active:scale-95 motion-reduce:transition-none"
+          >
+            Try it yourself
+          </button>
+        </div>
+        <div className="mt-8">
           <AgentWorkspace />
         </div>
       </section>

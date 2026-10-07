@@ -4,6 +4,8 @@ import { PipelineSection } from './sections/PipelineSection'
 import { SkillsSection } from './sections/SkillsSection'
 import { ContactSection } from './sections/ContactSection'
 import { PipelinePage } from './pages/PipelinePage'
+import { NotFoundPage } from './pages/NotFoundPage'
+import { BotWidget } from './components/BotWidget'
 import { ThemeToggle } from './components/ThemeToggle'
 import { Link, usePath } from './lib/router'
 
@@ -34,16 +36,20 @@ function App() {
         </div>
       </header>
 
-      {path === '/pipeline' ? (
-        <PipelinePage />
-      ) : (
+      {path === '/' ? (
         <>
           <HeroSection />
           <PipelineSection />
           <SkillsSection />
           <ContactSection />
         </>
+      ) : path === '/pipeline' ? (
+        <PipelinePage />
+      ) : (
+        <NotFoundPage />
       )}
+
+      <BotWidget />
     </main>
   )
 }

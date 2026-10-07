@@ -29,7 +29,7 @@ const ITEMS: Item[] = [
 const DURATIONS = [1100, 1300, 1500, 1700, 1500, 2600, 1000, 1500, 3400]
 const LAST = DURATIONS.length - 1
 
-function Avatar({ size = 36 }: { size?: number }) {
+export function Avatar({ size = 36 }: { size?: number }) {
   return (
     <span
       className="relative inline-flex shrink-0 items-center justify-center rounded-[34%] bg-gradient-to-br from-sky-400 to-violet-500 shadow-sm"
@@ -44,11 +44,11 @@ function Avatar({ size = 36 }: { size?: number }) {
   )
 }
 
-function Spinner() {
+export function Spinner() {
   return <span className="inline-block h-3.5 w-3.5 animate-spin rounded-full border-2 border-ink/20 border-t-teal-500 motion-reduce:animate-none" aria-hidden />
 }
 
-function Check({ className = '' }: { className?: string }) {
+export function Check({ className = '' }: { className?: string }) {
   return (
     <svg className={className} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
       <path d="M5 12.5l4.5 4.5L19 7" />

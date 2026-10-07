@@ -30,5 +30,11 @@ export function initLenis() {
     lenis?.raf(time * 1000)
   })
   gsap.ticker.lagSmoothing(0)
+  // Lenis caches the page height. Moving between pages (or content growing)
+  // changes it, which left the scroll stuck short of the bottom — so
+  // re-measure whenever the document's size changes.
+  if (typeof ResizeObserver !== 'undefined') {
+    new ResizeObserver(() => lenis?.resize()).observe(document.body)
+  }
   return lenis
 }

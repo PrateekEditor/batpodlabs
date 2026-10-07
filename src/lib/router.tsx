@@ -1,4 +1,5 @@
 import { useSyncExternalStore, type AnchorHTMLAttributes, type MouseEvent } from 'react'
+import { getLenis } from './lenis'
 
 // Tiny History-API router — the site only has a couple of pages, so no library.
 const EVENT = 'app:navigate'
@@ -20,6 +21,11 @@ export function navigate(to: string) {
   if (to === window.location.pathname) return
   window.history.pushState({}, '', to)
   window.dispatchEvent(new Event(EVENT))
+  const lenis = getLenis()
+  if (lenis) {
+    lenis.resize()
+    lenis.scrollTo(0, { immediate: true, force: true })
+  }
   window.scrollTo(0, 0)
 }
 

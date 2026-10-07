@@ -1,4 +1,5 @@
 import { CONTACT_LINKS } from '../data/links'
+import { Link } from '../lib/router'
 
 const YEAR = new Date().getFullYear()
 
@@ -29,6 +30,11 @@ export function ContactSection() {
       </div>
       <div className="mx-auto w-full max-w-6xl px-6 pb-8 text-xs text-muted sm:px-10">
         © {YEAR} Prateek Patel — BatpodLabs
+        {/* TODO: temporary link so the 404 page can be tested — remove later */}
+        <span className="mx-2">·</span>
+        <Link to="/404" className="underline-offset-2 hover:text-amber-text hover:underline">
+          404 page (test)
+        </Link>
       </div>
     </footer>
   )
