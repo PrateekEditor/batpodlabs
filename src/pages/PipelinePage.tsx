@@ -1,6 +1,8 @@
 import { useEffect } from 'react'
 import { AgentWorkspace } from '../components/AgentWorkspace'
 import { PipelineFlow } from '../components/PipelineFlow'
+import { SetupSteps } from '../components/SetupSteps'
+import { PIPELINE_SETUP } from '../data/projects'
 import { ContactSection } from '../sections/ContactSection'
 import { openBot } from '../components/BotWidget'
 import { Link } from '../lib/router'
@@ -93,6 +95,17 @@ export function PipelinePage() {
               </div>
             </Reveal>
           ))}
+        </div>
+      </section>
+
+      <section className="mx-auto w-full max-w-6xl px-6 py-12 sm:px-10 sm:py-16">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[0.8fr_1.2fr]">
+          <Reveal className="flex flex-col gap-2 lg:sticky lg:top-28 lg:self-start">
+            <span className="text-sm font-semibold uppercase tracking-[0.15em] text-amber-text">How to get it</span>
+            <h2 className="text-2xl font-bold text-ink sm:text-3xl">Setting it up for your org</h2>
+            <p className="text-sm leading-relaxed text-muted">Five steps, sandbox first. We go at the pace you’re comfortable with.</p>
+          </Reveal>
+          <SetupSteps steps={PIPELINE_SETUP} />
         </div>
       </section>
 

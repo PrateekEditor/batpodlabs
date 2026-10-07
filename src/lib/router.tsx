@@ -25,13 +25,13 @@ export function setNavigateGuard(g: ((go: () => void) => void) | null) {
 }
 
 export function navigate(to: string) {
-  if (to === window.location.pathname) return
+  if (to.split('#')[0] === window.location.pathname && !to.includes('#')) return
   if (guard) guard(() => go(to))
   else go(to)
 }
 
 function go(to: string) {
-  window.history.pushState({}, '', to)
+  window.history.pushState({}, '', to.split('#')[0])
   window.dispatchEvent(new Event(EVENT))
   const lenis = getLenis()
   if (lenis) {
@@ -39,6 +39,16 @@ function go(to: string) {
     lenis.scrollTo(0, { immediate: true, force: true })
   }
   window.scrollTo(0, 0)
+  // "/#projects" style links: wait a beat for the new page to render, then scroll to the section
+  const hash = to.split('#')[1]
+  if (hash) {
+    window.setTimeout(() => {
+      const el = document.getElementById(hash)
+      if (!el) return
+      if (lenis) lenis.scrollTo(el, { offset: -20, immediate: true, force: true })
+      else el.scrollIntoView()
+    }, 80)
+  }
 }
 
 export function Link({ to, onClick, ...rest }: { to: string } & AnchorHTMLAttributes<HTMLAnchorElement>) {

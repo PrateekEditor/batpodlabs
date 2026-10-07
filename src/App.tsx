@@ -3,7 +3,11 @@ import { HeroSection } from './sections/HeroSection'
 import { PipelineSection } from './sections/PipelineSection'
 import { SkillsSection } from './sections/SkillsSection'
 import { ContactSection } from './sections/ContactSection'
+import { ProjectsSection } from './sections/ProjectsSection'
+import { PersonalSection } from './sections/PersonalSection'
 import { PipelinePage } from './pages/PipelinePage'
+import { ProjectPage } from './pages/ProjectPage'
+import { JourneyPage } from './pages/JourneyPage'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { BotWidget } from './components/BotWidget'
 import { ThemeToggle } from './components/ThemeToggle'
@@ -15,7 +19,7 @@ function App() {
 
   return (
     <main className="relative min-h-screen w-full bg-cream">
-      <header className="fixed left-0 top-0 z-20 flex w-full items-center justify-between px-6 py-5 sm:px-10">
+      <header className="fixed left-0 top-0 z-20 flex w-full items-center justify-between bg-cream/80 px-6 py-4 backdrop-blur-md sm:px-10 sm:py-5">
         <Link to="/" className="text-sm font-bold uppercase tracking-[0.25em] text-ink">
           Prateek Patel
         </Link>
@@ -40,11 +44,17 @@ function App() {
         <>
           <HeroSection />
           <PipelineSection />
+          <ProjectsSection />
           <SkillsSection />
+          <PersonalSection />
           <ContactSection />
         </>
       ) : path === '/pipeline' ? (
         <PipelinePage />
+      ) : path === '/journey' ? (
+        <JourneyPage />
+      ) : path.startsWith('/projects/') ? (
+        <ProjectPage slug={path.slice('/projects/'.length)} />
       ) : (
         <NotFoundPage />
       )}
