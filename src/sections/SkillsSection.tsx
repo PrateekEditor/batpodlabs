@@ -28,7 +28,7 @@ export function SkillsSection() {
   const certRef = useReveal<HTMLDivElement>()
 
   return (
-    <section id="skills" className="mx-auto w-full max-w-6xl px-6 py-16 sm:px-10 sm:py-24">
+    <section id="skills" data-tour="Everything he works with, grouped. Hover a group to see the tools." className="mx-auto w-full max-w-6xl px-6 py-16 sm:px-10 sm:py-24">
       <div className="mb-10 flex flex-col gap-2">
         <span className="text-sm font-semibold uppercase tracking-[0.15em] text-amber-text">What I work with</span>
         <h2 className="text-3xl font-bold text-ink sm:text-4xl">Skills &amp; toolbox</h2>

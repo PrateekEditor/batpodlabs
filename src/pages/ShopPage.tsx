@@ -56,7 +56,7 @@ export function ShopPage() {
 
   return (
     <StakynShell>
-      <section className="mx-auto grid w-full max-w-6xl items-center gap-10 px-6 pb-12 pt-36 sm:px-10 sm:pt-36 md:grid-cols-[1fr_auto]">
+      <section data-tour="Our print shop! Everything is made to order on a Bambu A1." data-tour-cta="Order in a DM" className="mx-auto grid w-full max-w-6xl items-center gap-10 px-6 pb-12 pt-36 sm:px-10 sm:pt-36 md:grid-cols-[1fr_auto]">
         <div>
           <span className="text-sm font-bold uppercase tracking-[0.15em]" style={{ color: SK.orange }}>
             Stakyn Labs · print shop
@@ -126,7 +126,7 @@ export function ShopPage() {
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-6xl space-y-10 px-6 pb-16 sm:px-10">
+      <section data-tour="Pick a category, then tap Ask about this on anything you like." data-tour-cta="Ask about a piece" className="mx-auto w-full max-w-6xl space-y-10 px-6 pb-16 sm:px-10">
         {shownCats.map((c) => (
           <div key={c.id}>
             <h2 className="text-xl font-bold">{c.name}</h2>
@@ -140,7 +140,7 @@ export function ShopPage() {
         ))}
       </section>
 
-      <section className="mx-auto w-full max-w-6xl px-6 pb-20 sm:px-10">
+      <section data-tour="Broken clip or a custom name tag? Send a photo, we’ll print it." data-tour-cta="Custom request" className="mx-auto w-full max-w-6xl px-6 pb-20 sm:px-10">
         <div className="rounded-3xl p-7 sm:p-9" style={{ background: SK.orange }}>
           <div className="text-2xl font-bold text-[#0b0b0f] sm:text-3xl">Need something that isn’t here?</div>
           <p className="mt-1 max-w-xl text-sm text-[#0b0b0f]/75">

@@ -13,7 +13,7 @@ const showThreeRoom = typeof window !== 'undefined' && new URLSearchParams(windo
 
 export function HeroSection() {
   return (
-    <section className="relative mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-10 px-6 pb-16 pt-36 sm:px-10 sm:pt-36 md:grid-cols-2 md:gap-6 md:pb-24">
+    <section data-tour="Hi! I’m Stakyn. Prateek builds Salesforce + AI automation. Start with what he works on." data-tour-cta="See his skills" className="relative mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-10 px-6 pb-16 pt-36 sm:px-10 sm:pt-36 md:grid-cols-2 md:gap-6 md:pb-24">
       <div className="order-2 flex flex-col items-start gap-5 md:order-1">
         <span className="inline-block rounded-full bg-navy px-4 py-1.5 text-sm font-semibold text-on-navy">
           Salesforce Developer + AI Automation Engineer

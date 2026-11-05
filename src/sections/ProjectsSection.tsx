@@ -20,7 +20,7 @@ function Arrow() {
 export function ProjectsSection() {
   const head = useReveal<HTMLDivElement>()
   return (
-    <section id="projects" className="mx-auto w-full max-w-6xl px-6 py-16 sm:px-10 sm:py-24">
+    <section id="projects" data-tour="Real things he’s built. Each one has a setup guide you can follow." className="mx-auto w-full max-w-6xl px-6 py-16 sm:px-10 sm:py-24">
       <div ref={head} className="reveal mb-10 flex flex-col gap-2">
         <span className="text-sm font-semibold uppercase tracking-[0.15em] text-amber-text">Things I’m building</span>
         <h2 className="text-3xl font-bold text-ink sm:text-4xl">Projects</h2>

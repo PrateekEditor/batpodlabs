@@ -5,7 +5,7 @@ import { useReveal } from '../lib/useReveal'
 export function PersonalSection() {
   const ref = useReveal<HTMLDivElement>()
   return (
-    <section id="journey" className="mx-auto w-full max-w-6xl px-6 py-16 sm:px-10 sm:py-24">
+    <section id="journey" data-tour="Off the clock, he rides a Dominar called Batpod." data-tour-cta="Go riding" className="mx-auto w-full max-w-6xl px-6 py-16 sm:px-10 sm:py-24">
       <div ref={ref} className="reveal relative overflow-hidden rounded-3xl border border-ink/10 bg-cream-alt p-8 sm:p-12">
         {/* a road, winding off to the right */}
         <svg className="pointer-events-none absolute -right-10 top-0 h-full w-[60%] text-amber/40" viewBox="0 0 400 300" preserveAspectRatio="xMaxYMid slice" fill="none" aria-hidden>

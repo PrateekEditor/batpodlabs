@@ -375,3 +375,24 @@ svg [role="button"]:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   .tacho-needle, .tacho-idle, .road-dash { animation: none; }
 }
+
+/* the guide's chat bubble pops in after Stakyn lands */
+.tour-pop {
+  transform-origin: bottom right;
+  animation: tour-pop 0.32s 0.45s cubic-bezier(0.34, 1.5, 0.6, 1) both;
+}
+@keyframes tour-pop {
+  from { opacity: 0; transform: scale(0.6) translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+/* the button the bubble sends you to glows twice */
+.tour-pulse {
+  animation: tour-pulse 1.1s ease-out 2;
+}
+@keyframes tour-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(183, 242, 62, 0.75); }
+  100% { box-shadow: 0 0 0 16px rgba(183, 242, 62, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tour-pop, .tour-pulse { animation: none; }
+}

@@ -8,7 +8,7 @@ export function PipelineSection() {
   const ref = useReveal<HTMLDivElement>()
 
   return (
-    <section id="pipeline" className="mx-auto w-full max-w-6xl px-6 py-16 sm:px-10 sm:py-24">
+    <section id="pipeline" data-tour="This is the auto-debugger: tickets in, fixes out. Want to see me fix one?" data-tour-cta="Fix a ticket with me" className="mx-auto w-full max-w-6xl px-6 py-16 sm:px-10 sm:py-24">
       <div ref={ref} className="reveal">
         <div className="mb-8 flex flex-col gap-3">
           <span className="text-sm font-semibold uppercase tracking-[0.15em] text-amber-text">What I can set up for your org</span>
@@ -23,7 +23,7 @@ export function PipelineSection() {
             <div className="flex flex-wrap items-center gap-3">
               <button
                 type="button"
-                onClick={openBot} data-guide="Give me a Salesforce ticket, I’ll fix it"
+                onClick={openBot} data-tour-click data-guide="Give me a Salesforce ticket, I’ll fix it"
                 className="inline-flex h-11 items-center gap-2 rounded-full bg-amber px-6 text-sm font-semibold text-on-amber shadow-md shadow-amber/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-amber-hover hover:shadow-lg active:translate-y-0 active:scale-95 motion-reduce:transition-none"
               >
                 Chat with Stakyn

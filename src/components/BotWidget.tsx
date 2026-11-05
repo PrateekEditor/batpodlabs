@@ -2,6 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState, type FormEve
 import { Avatar, Check, Spinner } from './AgentWorkspace'
 import { StakynLogo } from './StakynLogo'
 import { useScrollGuide } from './useScrollGuide'
+import { RepoChat } from './RepoChat'
 import { navigate, setNavigateGuard, usePath } from '../lib/router'
 
 /**
@@ -344,7 +345,7 @@ export function BotWidget() {
 
   const away = mode !== 'idle'
 
-  const { tip, guiding } = useScrollGuide({ enabled: !hidden && mode === 'idle' && !open, wrap: guideWrap, hop: hopRef, eyes: eyesRef })
+  const { bubble, guiding, goToAction, closeBubble, holdBubble } = useScrollGuide({ enabled: !hidden && mode === 'idle' && !open, path, wrap: guideWrap, hop: hopRef, eyes: eyesRef })
   const onStakynSide = path.startsWith('/stakyn') || path.startsWith('/shop')
 
   if (hidden) return null
@@ -363,7 +364,8 @@ export function BotWidget() {
       <span className="sr-only" role="status">{mode === 'boot' ? 'Loading the site' : ''}</span>
 
     <div className="fixed bottom-4 right-4 z-[70] flex flex-col items-end gap-3 sm:bottom-6 sm:right-6" onKeyDown={onKey}>
-      {open && !away && (
+      {open && !away && onStakynSide && <RepoChat onClose={() => setOpen(false)} />}
+      {open && !away && !onStakynSide && (
         <div
           role="dialog"
           aria-label="Stakyn, Salesforce dev copilot (demo chat)"
@@ -545,14 +547,41 @@ export function BotWidget() {
         </div>
 
         <div ref={guideWrap} className="relative">
-        {/* the guide's tip, next to the orb while it points at something */}
-        <div
-          aria-live="polite"
-          className={`pointer-events-none absolute bottom-full right-0 mb-2 w-max max-w-[210px] rounded-2xl rounded-br-md bg-[#0b0b0f] px-3 py-2 text-xs font-semibold leading-snug text-white shadow-lg ring-1 ring-white/10 transition-all duration-300 ${tip ? 'opacity-100' : 'translate-y-1 opacity-0'}`}
-        >
-          <span className="mr-1 text-[#B7F23E]">→</span>
-          {tip}
-        </div>
+        {/* the guide's chat bubble about the section in view */}
+        {bubble && (
+          <div
+            key={bubble.id}
+            data-tour-bubble
+            role="status"
+            onPointerEnter={() => holdBubble(true)}
+            onPointerLeave={() => holdBubble(false)}
+            className={`tour-pop absolute right-0 w-[min(250px,calc(100vw-2rem))] rounded-2xl bg-[#0b0b0f] p-3 text-white shadow-xl shadow-black/30 ring-1 ring-white/10 ${bubble.below ? 'top-full mt-3 rounded-tr-md' : 'bottom-full mb-3 rounded-br-md'}`}
+          >
+            <button
+              type="button"
+              onClick={closeBubble}
+              aria-label="Hide tip"
+              className="absolute right-1.5 top-1.5 flex h-6 w-6 items-center justify-center rounded-full text-white/40 hover:bg-white/10 hover:text-white"
+            >
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" aria-hidden>
+                <path d="M6 6l12 12M18 6L6 18" />
+              </svg>
+            </button>
+            <p className="pr-5 text-[12.5px] font-medium leading-snug">{bubble.text}</p>
+            {bubble.cta && (
+              <button
+                type="button"
+                onClick={goToAction}
+                className="mt-2 inline-flex h-7 items-center gap-1 rounded-full bg-[#B7F23E] px-3 text-[11.5px] font-bold text-[#0b0b0f] transition-transform active:scale-95"
+              >
+                {bubble.cta}
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+              </button>
+            )}
+          </div>
+        )}
         <div
           className="relative h-14 w-14"
           style={{
@@ -566,7 +595,7 @@ export function BotWidget() {
                 type="button"
                 disabled={away}
                 aria-expanded={open}
-                aria-label={open ? 'Close the Stakyn demo chat' : 'Open the Stakyn demo chat'}
+                aria-label={open ? 'Close the Stakyn chat' : 'Open the Stakyn chat'}
                 onClick={() => setOpen((v) => !v)}
                 className="block h-14 w-14 overflow-hidden rounded-full shadow-xl shadow-ink/25 transition-transform duration-150 hover:scale-105 active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2 motion-reduce:transition-none"
               >

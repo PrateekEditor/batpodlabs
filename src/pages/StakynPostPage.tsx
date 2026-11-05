@@ -50,7 +50,7 @@ export function StakynPostPage({ slug }: { slug: string }) {
 
   return (
     <StakynShell>
-      <article className="mx-auto w-full max-w-3xl px-6 pb-16 pt-36 sm:px-10 sm:pt-36">
+      <article data-tour="Grab the repo first, then follow the setup below." data-tour-cta="Open the repo" className="mx-auto w-full max-w-3xl px-6 pb-16 pt-36 sm:px-10 sm:pt-36">
         <BackLink to="/stakyn">All repos &amp; fixes</BackLink>
 
         <div className="mt-6 flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-wide">
@@ -102,7 +102,7 @@ export function StakynPostPage({ slug }: { slug: string }) {
 
         {/* setup */}
         {post.steps.length > 0 && (
-          <section className="mt-10 rounded-2xl border p-6 sm:p-7" style={{ background: SK.panel, borderColor: SK.line }}>
+          <section data-tour="Tap Copy on any command, paste it in your terminal. Done." className="mt-10 rounded-2xl border p-6 sm:p-7" style={{ background: SK.panel, borderColor: SK.line }}>
             <h2 data-guide="Copy, paste, done" className="inline-block text-xl font-bold">Setup</h2>
             <ol className="mt-4 space-y-4">
               {post.steps.map((s, i) => (

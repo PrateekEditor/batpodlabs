@@ -81,7 +81,7 @@ export function StakynHubPage() {
   return (
     <StakynShell>
       {/* hero */}
-      <section className="mx-auto grid w-full max-w-6xl items-center gap-10 px-6 pb-12 pt-36 sm:px-10 sm:pt-36 md:grid-cols-[auto_1fr] md:gap-14">
+      <section data-tour="Welcome to Stakyn Labs! One free repo or dev fix a day. Tap me for any repo." data-tour-cta="Ask me for a repo" data-tour-chat className="mx-auto grid w-full max-w-6xl items-center gap-10 px-6 pb-12 pt-36 sm:px-10 sm:pt-36 md:grid-cols-[auto_1fr] md:gap-14">
         <div className="stakyn-float mx-auto w-44 sm:w-56 md:mx-0">
           <StakynLogo size={224} ring={false} className="h-auto w-full drop-shadow-[0_18px_40px_rgba(232,106,47,0.35)]" />
         </div>
@@ -124,7 +124,7 @@ export function StakynHubPage() {
       </section>
 
       {/* search + filters */}
-      <section id="repos" className="mx-auto w-full max-w-6xl px-6 pb-6 sm:px-10">
+      <section id="repos" data-tour="Every repo from the reels. Type the comment keyword here, like GIT." data-tour-cta="Search" className="mx-auto w-full max-w-6xl px-6 pb-6 sm:px-10">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <h2 className="text-2xl font-bold sm:text-3xl">Every repo &amp; fix we’ve posted</h2>
@@ -190,7 +190,7 @@ export function StakynHubPage() {
       </section>
 
       {/* series */}
-      <section className="mx-auto w-full max-w-6xl px-6 pb-16 sm:px-10">
+      <section data-tour="Four series. Steal This Repo and Ask Stakyn drop daily." className="mx-auto w-full max-w-6xl px-6 pb-16 sm:px-10">
         <h2 className="text-2xl font-bold">The series</h2>
         <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {STAKYN_SERIES.map((s) => {
@@ -209,7 +209,7 @@ export function StakynHubPage() {
       </section>
 
       {/* shop teaser */}
-      <section className="mx-auto w-full max-w-6xl px-6 pb-20 sm:px-10">
+      <section data-tour="We 3D print too: desk, games, Hot Wheels and bike bits." data-tour-cta="Visit the shop" className="mx-auto w-full max-w-6xl px-6 pb-20 sm:px-10">
         <Link
           to="/shop" data-guide="Need a 3D print? This way"
           className="flex flex-col items-start justify-between gap-4 rounded-3xl p-7 transition-transform hover:-translate-y-0.5 sm:flex-row sm:items-center sm:p-9 motion-reduce:transition-none"
