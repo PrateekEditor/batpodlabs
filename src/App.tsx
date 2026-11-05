@@ -12,13 +12,16 @@ import { StakynHubPage } from './pages/StakynHubPage'
 import { StakynPostPage } from './pages/StakynPostPage'
 import { ShopPage } from './pages/ShopPage'
 import { NotFoundPage } from './pages/NotFoundPage'
-import { BotWidget } from './components/BotWidget'
+import { BotWidget, isBikePath } from './components/BotWidget'
+import { SocialIcon } from './components/SocialIcon'
+import { BATPOD_LINKS } from './data/links'
 import { ThemeToggle } from './components/ThemeToggle'
 import { Link, usePath } from './lib/router'
 
 function App() {
   useLenis()
   const path = usePath().replace(/\/+$/, '') || '/'
+  const bike = isBikePath(path)
   const dark = path === '/shop' || path === '/stakyn' || path.startsWith('/stakyn/')
   const NAV = [
     { to: '/', label: 'Work', on: path === '/' || path.startsWith('/projects') || path === '/pipeline' },
@@ -29,6 +32,20 @@ function App() {
 
   return (
     <main className="relative min-h-screen w-full bg-cream">
+      {bike ? (
+        <header className="fixed left-0 top-0 z-20 flex w-full items-center justify-between bg-[#111]/85 px-6 py-4 text-[#EDE6DA] backdrop-blur-md sm:px-10 sm:py-5">
+          <Link to="/batpod" className="text-xl font-bold uppercase tracking-wide" style={{ fontFamily: '"Oswald", sans-serif' }}>
+            Batpod <span className="text-[#FF6A1A]">with PP</span>
+          </Link>
+          <div className="flex gap-2">
+            {BATPOD_LINKS.map((l) => (
+              <a key={l.key} href={l.url} target="_blank" rel="noreferrer" aria-label={l.label} className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-[#2c2c2c] transition-colors hover:border-[#FF6A1A] hover:text-[#FF6A1A]">
+                <SocialIcon name={l.key} size={18} />
+              </a>
+            ))}
+          </div>
+        </header>
+      ) : (
       <header className={`fixed left-0 top-0 z-20 w-full backdrop-blur-md ${dark ? 'bg-[#0b0b0f]/80 text-white' : 'bg-cream/80 text-ink'}`}>
         <div className="flex w-full items-center justify-between gap-4 px-6 py-4 sm:px-10 sm:py-5">
         <Link to={dark ? '/stakyn' : '/'} className="shrink-0 text-sm font-bold uppercase tracking-[0.25em]">
@@ -80,6 +97,7 @@ function App() {
           ))}
         </nav>
       </header>
+      )}
 
       {path === '/' ? (
         <>

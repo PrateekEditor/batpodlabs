@@ -22,7 +22,7 @@ function Icon({ d, size = 22 }: { d: string; size?: number }) {
   )
 }
 
-function ProductCard({ p, icon }: { p: ShopProduct; icon: string }) {
+function ProductCard({ p, icon, guide }: { p: ShopProduct; icon: string; guide?: boolean }) {
   const s = STATUS[p.status]
   return (
     <div className="flex flex-col gap-3 rounded-2xl border p-5" style={{ background: SK.panel, borderColor: SK.line }}>
@@ -40,7 +40,7 @@ function ProductCard({ p, icon }: { p: ShopProduct; icon: string }) {
       </div>
       <div className="mt-auto flex items-center justify-between pt-1">
         <span className="text-sm font-semibold text-white/80">{p.price ? `₹${p.price}` : 'DM for price'}</span>
-        <a href={mail(`Order: ${p.name} (${p.key})`)} className="text-sm font-bold underline-offset-2 hover:underline" style={{ color: SK.lime }}>
+        <a href={mail(`Order: ${p.name} (${p.key})`)} data-guide={guide ? 'Ask about any piece' : undefined} className="text-sm font-bold underline-offset-2 hover:underline" style={{ color: SK.lime }}>
           Ask about this
         </a>
       </div>
@@ -70,7 +70,7 @@ export function ShopPage() {
             Useful prints for your desk, your games, your Hot Wheels and your bike, made on our {SHOP_PRINTER}. Pick a colour, we print it, you get it.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <a href={DM} target="_blank" rel="noreferrer" className="inline-flex h-11 items-center gap-2 rounded-full px-5 text-sm font-bold text-[#0b0b0f] transition-transform hover:-translate-y-0.5 active:scale-95 motion-reduce:transition-none" style={{ background: SK.lime }}>
+            <a href={DM} target="_blank" rel="noreferrer" data-guide="Order in one DM" className="inline-flex h-11 items-center gap-2 rounded-full px-5 text-sm font-bold text-[#0b0b0f] transition-transform hover:-translate-y-0.5 active:scale-95 motion-reduce:transition-none" style={{ background: SK.lime }}>
               Order on Instagram DM
             </a>
             <a href={mail('Custom 3D print request')} className="inline-flex h-11 items-center rounded-full border px-5 text-sm font-semibold text-white/85 hover:text-white" style={{ borderColor: SK.line }}>
@@ -132,8 +132,8 @@ export function ShopPage() {
             <h2 className="text-xl font-bold">{c.name}</h2>
             <p className="mt-0.5 text-sm text-white/55">{c.blurb}</p>
             <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {SHOP_PRODUCTS.filter((p) => p.category === c.id).map((p) => (
-                <ProductCard key={p.key} p={p} icon={c.icon} />
+              {SHOP_PRODUCTS.filter((p) => p.category === c.id).map((p, i) => (
+                <ProductCard key={p.key} p={p} icon={c.icon} guide={i === 0} />
               ))}
             </div>
           </div>
@@ -147,7 +147,7 @@ export function ShopPage() {
             A broken clip, a missing knob, a custom name tag. Send a photo and the size, and we’ll tell you if we can print it.
           </p>
           <div className="mt-5 flex flex-wrap gap-3">
-            <a href={DM} target="_blank" rel="noreferrer" className="inline-flex h-11 items-center rounded-full bg-[#0b0b0f] px-6 text-sm font-bold text-white">
+            <a href={DM} target="_blank" rel="noreferrer" data-guide="Custom prints too" className="inline-flex h-11 items-center rounded-full bg-[#0b0b0f] px-6 text-sm font-bold text-white">
               DM @stakynlabs
             </a>
             <a href={mail('Custom 3D print request')} className="inline-flex h-11 items-center rounded-full border-2 border-[#0b0b0f] px-6 text-sm font-bold text-[#0b0b0f]">

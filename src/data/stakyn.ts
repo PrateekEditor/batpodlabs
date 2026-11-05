@@ -66,7 +66,7 @@ export const STAKYN_INTRO = {
   ]
 }
 
-export const STAKYN_POSTS: StakynPost[] = [
+const ALL_POSTS: StakynPost[] = [
   {
     "slug": "gitleaks",
     "series": "Ask Stakyn",
@@ -658,3 +658,6 @@ export const STAKYN_POSTS: StakynPost[] = [
     ]
   }
 ]
+
+/** Only what is actually live on social media: a post needs at least one platform link. */
+export const STAKYN_POSTS: StakynPost[] = ALL_POSTS.filter((p) => p.live.length > 0)

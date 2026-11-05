@@ -346,3 +346,32 @@ svg [role="button"]:focus-visible {
     transition: none;
   }
 }
+
+/* BatPod: the rev counter blips to the red line, drops to idle and burbles */
+.tacho-needle {
+  transform: rotate(300deg);
+  animation: tacho-rev 2.2s cubic-bezier(0.3, 0.7, 0.4, 1) both;
+}
+@keyframes tacho-rev {
+  0% { transform: rotate(225deg); }
+  40% { transform: rotate(465deg); }
+  55% { transform: rotate(440deg); }
+  100% { transform: rotate(300deg); }
+}
+.tacho-idle {
+  animation: tacho-idle 0.9s 2.2s ease-in-out infinite alternate;
+}
+@keyframes tacho-idle {
+  from { transform: rotate(-3deg); }
+  to { transform: rotate(4deg); }
+}
+/* the centre line rushing towards you */
+.road-dash {
+  animation: road-dash 0.9s linear infinite;
+}
+@keyframes road-dash {
+  to { stroke-dashoffset: -74; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tacho-needle, .tacho-idle, .road-dash { animation: none; }
+}

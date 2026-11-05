@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react'
 import { Avatar, Check, Spinner } from './AgentWorkspace'
 import { StakynLogo } from './StakynLogo'
+import { useScrollGuide } from './useScrollGuide'
 import { navigate, setNavigateGuard, usePath } from '../lib/router'
 
 /**
@@ -130,8 +131,15 @@ function centreOffset() {
   return { x: w / 2 - (w - m - 28), y: h / 2 - (h - m - 28) }
 }
 
+/** Stakyn stays off the biking pages: that side is BatPod's, not the tech brand's. */
+export const isBikePath = (p: string) => /^\/(batpod|journey)\/?$/.test(p)
+
 export function BotWidget() {
   const path = usePath()
+  const hidden = isBikePath(path)
+  const guideWrap = useRef<HTMLDivElement>(null)
+  const hopRef = useRef<HTMLDivElement>(null)
+  const eyesRef = useRef<SVGGElement>(null)
   const prefersReduce = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
   const [mode, setMode] = useState<Mode>(prefersReduce ? 'idle' : 'boot')
   const [instant, setInstant] = useState(false)
@@ -218,7 +226,8 @@ export function BotWidget() {
       setNavigateGuard(null)
       return
     }
-    setNavigateGuard((go) => {
+    setNavigateGuard((go, to) => {
+      if (isBikePath(to.split('#')[0]) || isBikePath(window.location.pathname)) return go()
       if (busy.current) return
       busy.current = true
       viaGuard.current = true
@@ -334,6 +343,11 @@ export function BotWidget() {
   const started = msgs.length > 1
 
   const away = mode !== 'idle'
+
+  const { tip, guiding } = useScrollGuide({ enabled: !hidden && mode === 'idle' && !open, wrap: guideWrap, hop: hopRef, eyes: eyesRef })
+  const onStakynSide = path.startsWith('/stakyn') || path.startsWith('/shop')
+
+  if (hidden) return null
 
   return (
     <>
@@ -524,12 +538,21 @@ export function BotWidget() {
       <div className="flex items-center gap-3">
         {/* greeting nudge / label */}
         <div
-          className={`hidden max-w-[220px] rounded-2xl rounded-br-md border border-ink/10 bg-surface px-3.5 py-2 text-xs font-medium text-ink shadow-lg shadow-ink/10 transition-all duration-300 sm:block ${hint && !open && !away ? 'translate-x-0 opacity-100' : 'pointer-events-none translate-x-2 opacity-0'}`}
+          className={`hidden max-w-[220px] rounded-2xl rounded-br-md border border-ink/10 bg-surface px-3.5 py-2 text-xs font-medium text-ink shadow-lg shadow-ink/10 transition-all duration-300 sm:block ${hint && !open && !away && !guiding && !onStakynSide ? 'translate-x-0 opacity-100' : 'pointer-events-none translate-x-2 opacity-0'}`}
           aria-hidden={!hint}
         >
           Hi, I’m Stakyn. Give me a Salesforce ticket to fix.
         </div>
 
+        <div ref={guideWrap} className="relative">
+        {/* the guide's tip, next to the orb while it points at something */}
+        <div
+          aria-live="polite"
+          className={`pointer-events-none absolute bottom-full right-0 mb-2 w-max max-w-[210px] rounded-2xl rounded-br-md bg-[#0b0b0f] px-3 py-2 text-xs font-semibold leading-snug text-white shadow-lg ring-1 ring-white/10 transition-all duration-300 ${tip ? 'opacity-100' : 'translate-y-1 opacity-0'}`}
+        >
+          <span className="mr-1 text-[#B7F23E]">→</span>
+          {tip}
+        </div>
         <div
           className="relative h-14 w-14"
           style={{
@@ -538,7 +561,7 @@ export function BotWidget() {
           }}
         >
           <div className={away || open ? '' : 'bot-float'}>
-            <div className="relative h-14 w-14">
+            <div ref={hopRef} className="relative h-14 w-14">
               <button
                 type="button"
                 disabled={away}
@@ -547,7 +570,7 @@ export function BotWidget() {
                 onClick={() => setOpen((v) => !v)}
                 className="block h-14 w-14 overflow-hidden rounded-full shadow-xl shadow-ink/25 transition-transform duration-150 hover:scale-105 active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2 motion-reduce:transition-none"
               >
-                <StakynLogo size={56} />
+                <StakynLogo size={56} eyesRef={eyesRef} />
               </button>
               {open && !away && (
                 <span className="pointer-events-none absolute -left-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-navy text-on-navy ring-2 ring-surface" aria-hidden>
@@ -558,6 +581,7 @@ export function BotWidget() {
               )}
             </div>
           </div>
+        </div>
         </div>
       </div>
     </div>

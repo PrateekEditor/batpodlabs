@@ -18,7 +18,7 @@ export function ContactSection() {
         <div className="flex flex-wrap gap-3">
           {CONTACT_LINKS.map((link) => (
             <a
-              key={link.label}
+              key={link.label} data-guide={link.label === 'LinkedIn' ? "Say hi on LinkedIn" : undefined}
               href={link.url}
               target="_blank"
               rel="noreferrer"
@@ -33,7 +33,7 @@ export function ContactSection() {
       <div className="mx-auto w-full max-w-6xl px-6 pb-12 sm:px-10">
         <div className="text-xs font-semibold uppercase tracking-[0.15em] text-muted">Also me</div>
         <div className="mt-3 grid gap-3 sm:grid-cols-3">
-          <Link to="/stakyn" className="group flex items-center gap-3.5 rounded-2xl bg-[#0b0b0f] p-4 text-white transition-transform hover:-translate-y-0.5 motion-reduce:transition-none">
+          <Link to="/stakyn" data-guide="My tech channel lives here" className="group flex items-center gap-3.5 rounded-2xl bg-[#0b0b0f] p-4 text-white transition-transform hover:-translate-y-0.5 motion-reduce:transition-none">
             <span className="stakyn-float shrink-0"><StakynLogo size={44} /></span>
             <span className="min-w-0">
               <span className="block font-bold">stakyn <span className="text-[#B8A2FF]">labs</span></span>

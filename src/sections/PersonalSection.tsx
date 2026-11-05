@@ -19,7 +19,7 @@ export function PersonalSection() {
             When I’m not in an org, I’m usually on the Batpod. This is where my biking journey and travel stories live.
           </p>
           <Link
-            to="/batpod"
+            to="/batpod" data-guide="Off the clock: the rides"
             className="mt-6 inline-flex h-11 items-center gap-2 rounded-full bg-amber px-6 text-sm font-semibold text-on-amber shadow-md shadow-amber/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-amber-hover active:translate-y-0 active:scale-95 motion-reduce:transition-none"
           >
             BatPod With PP

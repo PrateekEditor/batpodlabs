@@ -78,7 +78,7 @@ export function StakynPostPage({ slug }: { slug: string }) {
         {/* links */}
         <div className="mt-8 flex flex-wrap gap-3">
           {repoLink && (
-            <a href={repoLink} target="_blank" rel="noreferrer" className="inline-flex h-11 items-center gap-2 rounded-full px-5 text-sm font-bold text-[#0b0b0f]" style={{ background: SK.lime }}>
+            <a href={repoLink} target="_blank" rel="noreferrer" data-guide="Grab the repo here" className="inline-flex h-11 items-center gap-2 rounded-full px-5 text-sm font-bold text-[#0b0b0f]" style={{ background: SK.lime }}>
               Open on GitHub
             </a>
           )}
@@ -88,6 +88,7 @@ export function StakynPostPage({ slug }: { slug: string }) {
               href={l.url}
               target="_blank"
               rel="noreferrer"
+              data-guide={i === 0 && !repoLink ? 'Grab the repo here' : undefined}
               className={`inline-flex h-11 items-center gap-2 rounded-full px-5 text-sm font-bold ${i === 0 && !repoLink ? 'text-[#0b0b0f]' : 'border text-white hover:border-white/40'}`}
               style={i === 0 && !repoLink ? { background: SK.lime } : { borderColor: SK.line }}
             >
@@ -102,7 +103,7 @@ export function StakynPostPage({ slug }: { slug: string }) {
         {/* setup */}
         {post.steps.length > 0 && (
           <section className="mt-10 rounded-2xl border p-6 sm:p-7" style={{ background: SK.panel, borderColor: SK.line }}>
-            <h2 className="text-xl font-bold">Setup</h2>
+            <h2 data-guide="Copy, paste, done" className="inline-block text-xl font-bold">Setup</h2>
             <ol className="mt-4 space-y-4">
               {post.steps.map((s, i) => (
                 <li key={s} className="flex gap-3.5">
@@ -130,8 +131,8 @@ export function StakynPostPage({ slug }: { slug: string }) {
           <section className="mt-8">
             <h2 className="text-sm font-semibold uppercase tracking-[0.15em] text-white/45">Watch the video</h2>
             <div className="mt-3 flex flex-wrap gap-2">
-              {post.live.map((l) => (
-                <a key={l.platform} href={l.url} target="_blank" rel="noreferrer" className="rounded-full border px-4 py-2 text-sm font-semibold text-white/80 transition-colors hover:border-[#B7F23E] hover:text-white" style={{ borderColor: SK.line }}>
+              {post.live.map((l, i) => (
+                <a key={l.platform} data-guide={i === 0 ? 'Watch the video' : undefined} href={l.url} target="_blank" rel="noreferrer" className="rounded-full border px-4 py-2 text-sm font-semibold text-white/80 transition-colors hover:border-[#B7F23E] hover:text-white" style={{ borderColor: SK.line }}>
                   {l.platform}
                 </a>
               ))}

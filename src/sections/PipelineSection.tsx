@@ -23,7 +23,7 @@ export function PipelineSection() {
             <div className="flex flex-wrap items-center gap-3">
               <button
                 type="button"
-                onClick={openBot}
+                onClick={openBot} data-guide="Give me a Salesforce ticket, I’ll fix it"
                 className="inline-flex h-11 items-center gap-2 rounded-full bg-amber px-6 text-sm font-semibold text-on-amber shadow-md shadow-amber/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-amber-hover hover:shadow-lg active:translate-y-0 active:scale-95 motion-reduce:transition-none"
               >
                 Chat with Stakyn

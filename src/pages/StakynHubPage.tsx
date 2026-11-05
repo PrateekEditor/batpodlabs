@@ -19,10 +19,11 @@ function matches(p: StakynPost, q: string) {
     .every((w) => hay.includes(w))
 }
 
-function PostCard({ p }: { p: StakynPost }) {
+function PostCard({ p, guide }: { p: StakynPost; guide?: boolean }) {
   return (
     <Link
       to={`/stakyn/${p.slug}`}
+      data-guide={guide ? 'Tap a card for the repo & setup' : undefined}
       className="group flex flex-col gap-3 rounded-2xl border p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-[#B7F23E]/60 motion-reduce:transition-none"
       style={{ background: SK.panel, borderColor: SK.line }}
     >
@@ -93,7 +94,7 @@ export function StakynHubPage() {
           </p>
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <a
-              href="https://ig.me/m/stakynlabs"
+              href="https://ig.me/m/stakynlabs" data-guide="Want a repo or fix? DM us"
               target="_blank"
               rel="noreferrer"
               className="inline-flex h-11 items-center gap-2 rounded-full px-5 text-sm font-bold text-[#0b0b0f] transition-transform hover:-translate-y-0.5 active:scale-95 motion-reduce:transition-none"
@@ -139,7 +140,7 @@ export function StakynHubPage() {
             <path d="M20 20l-3.5-3.5" />
           </svg>
           <input
-            type="search"
+            type="search" data-guide="Saw it on a reel? Search it"
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Search a tool, problem or comment keyword (e.g. git, localhost, LEAK)"
@@ -173,8 +174,8 @@ export function StakynHubPage() {
       <section className="mx-auto w-full max-w-6xl px-6 pb-16 sm:px-10">
         {shown.length ? (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {shown.map((p) => (
-              <PostCard key={p.slug} p={p} />
+            {shown.map((p, i) => (
+              <PostCard key={p.slug} p={p} guide={i === 0} />
             ))}
           </div>
         ) : (
@@ -210,7 +211,7 @@ export function StakynHubPage() {
       {/* shop teaser */}
       <section className="mx-auto w-full max-w-6xl px-6 pb-20 sm:px-10">
         <Link
-          to="/shop"
+          to="/shop" data-guide="Need a 3D print? This way"
           className="flex flex-col items-start justify-between gap-4 rounded-3xl p-7 transition-transform hover:-translate-y-0.5 sm:flex-row sm:items-center sm:p-9 motion-reduce:transition-none"
           style={{ background: SK.orange }}
         >

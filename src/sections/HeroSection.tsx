@@ -33,7 +33,7 @@ export function HeroSection() {
         </p>
         <div className="mt-2 flex flex-wrap items-center gap-3">
           <a
-            href="#skills"
+            href="#skills" data-guide="Start here: what I build"
             className="inline-flex h-11 items-center gap-2 rounded-full bg-amber px-6 text-sm font-semibold text-on-amber shadow-md shadow-amber/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-amber-hover hover:shadow-lg active:translate-y-0 active:scale-95 motion-reduce:transition-none"
           >
             See my skills

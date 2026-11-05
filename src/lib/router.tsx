@@ -19,14 +19,14 @@ export function usePath() {
 
 // The bot installs a guard so page changes can play its loading transition
 // first; without one, navigation is immediate.
-let guard: ((go: () => void) => void) | null = null
-export function setNavigateGuard(g: ((go: () => void) => void) | null) {
+let guard: ((go: () => void, to: string) => void) | null = null
+export function setNavigateGuard(g: ((go: () => void, to: string) => void) | null) {
   guard = g
 }
 
 export function navigate(to: string) {
   if (to.split('#')[0] === window.location.pathname && !to.includes('#')) return
-  if (guard) guard(() => go(to))
+  if (guard) guard(() => go(to), to)
   else go(to)
 }
 
