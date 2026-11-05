@@ -19,10 +19,10 @@ export function PersonalSection() {
             When I’m not in an org, I’m usually on the Batpod. This is where my biking journey and travel stories live.
           </p>
           <Link
-            to="/journey"
+            to="/batpod"
             className="mt-6 inline-flex h-11 items-center gap-2 rounded-full bg-amber px-6 text-sm font-semibold text-on-amber shadow-md shadow-amber/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-amber-hover active:translate-y-0 active:scale-95 motion-reduce:transition-none"
           >
-            Follow the journey
+            BatPod With PP
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
               <path d="M5 12h14M13 6l6 6-6 6" />
             </svg>

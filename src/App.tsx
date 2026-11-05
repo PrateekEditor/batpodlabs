@@ -7,7 +7,10 @@ import { ProjectsSection } from './sections/ProjectsSection'
 import { PersonalSection } from './sections/PersonalSection'
 import { PipelinePage } from './pages/PipelinePage'
 import { ProjectPage } from './pages/ProjectPage'
-import { JourneyPage } from './pages/JourneyPage'
+import { BatpodPage } from './pages/BatpodPage'
+import { StakynHubPage } from './pages/StakynHubPage'
+import { StakynPostPage } from './pages/StakynPostPage'
+import { ShopPage } from './pages/ShopPage'
 import { NotFoundPage } from './pages/NotFoundPage'
 import { BotWidget } from './components/BotWidget'
 import { ThemeToggle } from './components/ThemeToggle'
@@ -16,14 +19,38 @@ import { Link, usePath } from './lib/router'
 function App() {
   useLenis()
   const path = usePath().replace(/\/+$/, '') || '/'
+  const dark = path === '/shop' || path === '/stakyn' || path.startsWith('/stakyn/')
+  const NAV = [
+    { to: '/', label: 'Work', on: path === '/' || path.startsWith('/projects') || path === '/pipeline' },
+    { to: '/stakyn', label: 'Stakyn Labs', on: path.startsWith('/stakyn') },
+    { to: '/shop', label: 'Print shop', on: path === '/shop' },
+    { to: '/batpod', label: 'BatPod', on: path === '/batpod' || path === '/journey' },
+  ]
 
   return (
     <main className="relative min-h-screen w-full bg-cream">
-      <header className="fixed left-0 top-0 z-20 flex w-full items-center justify-between bg-cream/80 px-6 py-4 backdrop-blur-md sm:px-10 sm:py-5">
-        <Link to="/" className="text-sm font-bold uppercase tracking-[0.25em] text-ink">
-          Prateek Patel
+      <header className={`fixed left-0 top-0 z-20 w-full backdrop-blur-md ${dark ? 'bg-[#0b0b0f]/80 text-white' : 'bg-cream/80 text-ink'}`}>
+        <div className="flex w-full items-center justify-between gap-4 px-6 py-4 sm:px-10 sm:py-5">
+        <Link to={dark ? '/stakyn' : '/'} className="shrink-0 text-sm font-bold uppercase tracking-[0.25em]">
+          {dark ? (
+            <span className="normal-case tracking-tight text-base">stakyn <span className="text-[#B8A2FF]">labs</span></span>
+          ) : (
+            'Prateek Patel'
+          )}
         </Link>
-        <div className="flex items-center gap-2 sm:gap-3">
+        <nav aria-label="Site" className="hidden items-center gap-1 md:flex">
+          {NAV.map((n) => (
+            <Link
+              key={n.to}
+              to={n.to}
+              aria-current={n.on ? 'page' : undefined}
+              className={`rounded-full px-3.5 py-1.5 text-sm font-semibold transition-colors ${n.on ? (dark ? 'bg-white/10 text-white' : 'bg-ink/[0.07] text-ink') : dark ? 'text-white/60 hover:text-white' : 'text-muted hover:text-ink'}`}
+            >
+              {n.label}
+            </Link>
+          ))}
+        </nav>
+        <div className={`items-center gap-2 sm:gap-3 ${dark ? "hidden" : "flex"}`}>
           <ThemeToggle />
           <a
             href="/Prateek_Patel_Resume.pdf"
@@ -38,6 +65,20 @@ function App() {
             Resume
           </a>
         </div>
+        </div>
+        {/* phones: the same links as a scrollable row */}
+        <nav aria-label="Site" className="flex gap-1 overflow-x-auto px-4 pb-2.5 md:hidden">
+          {NAV.map((n) => (
+            <Link
+              key={n.to}
+              to={n.to}
+              aria-current={n.on ? 'page' : undefined}
+              className={`shrink-0 rounded-full px-3 py-1 text-[13px] font-semibold ${n.on ? (dark ? 'bg-white/10 text-white' : 'bg-ink/[0.07] text-ink') : dark ? 'text-white/60' : 'text-muted'}`}
+            >
+              {n.label}
+            </Link>
+          ))}
+        </nav>
       </header>
 
       {path === '/' ? (
@@ -51,8 +92,14 @@ function App() {
         </>
       ) : path === '/pipeline' ? (
         <PipelinePage />
-      ) : path === '/journey' ? (
-        <JourneyPage />
+      ) : path === '/batpod' || path === '/journey' ? (
+        <BatpodPage />
+      ) : path === '/stakyn' ? (
+        <StakynHubPage />
+      ) : path.startsWith('/stakyn/') ? (
+        <StakynPostPage slug={path.slice('/stakyn/'.length)} />
+      ) : path === '/shop' ? (
+        <ShopPage />
       ) : path.startsWith('/projects/') ? (
         <ProjectPage slug={path.slice('/projects/'.length)} />
       ) : (

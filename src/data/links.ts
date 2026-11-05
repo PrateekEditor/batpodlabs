@@ -17,3 +17,9 @@ export const STAKYN_LINKS: { key: SocialKey; label: string; url: string }[] = [
   { key: 'facebook', label: 'Facebook', url: 'https://www.facebook.com/profile.php?id=61595410024901' },
   { key: 'email', label: 'Email', url: `mailto:${STAKYN_EMAIL}` },
 ]
+
+// BatPod With PP — the biking side.
+export const BATPOD_LINKS: { key: SocialKey; label: string; handle: string; url: string }[] = [
+  { key: 'youtube', label: 'YouTube', handle: '@BatPodWithPP', url: 'https://www.youtube.com/@BatPodWithPP' },
+  { key: 'instagram', label: 'Instagram', handle: '@batpod.with.pp', url: 'https://www.instagram.com/batpod.with.pp/' },
+]

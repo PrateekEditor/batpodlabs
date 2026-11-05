@@ -1,3 +1,4 @@
+import { StakynLogo } from './StakynLogo'
 import { useEffect, useRef, useState } from 'react'
 
 /**
@@ -30,25 +31,10 @@ const DURATIONS = [1100, 1300, 1500, 1700, 1500, 2600, 1000, 1500, 3400]
 const LAST = DURATIONS.length - 1
 
 export function Avatar({ size = 36 }: { size?: number }) {
-  // PP wears Prateek's face: the centre cell of the direction sheet, cropped round.
+  // the bot is Stakyn: the Stakyn Labs logo, round
   return (
-    <span
-      aria-hidden
-      className="inline-block shrink-0 overflow-hidden rounded-full bg-amber/25 ring-1 ring-ink/10"
-      style={{ width: size, height: size }}
-    >
-      <span
-        className="block"
-        style={{
-          width: size * 1.45,
-          height: size * 1.45,
-          marginLeft: -size * 0.225,
-          marginTop: -size * 0.12,
-          backgroundImage: 'url(/mascots/prateek-directions.webp)',
-          backgroundSize: '300% 300%',
-          backgroundPosition: '50% 50%',
-        }}
-      />
+    <span aria-hidden className="inline-block shrink-0 overflow-hidden rounded-full" style={{ width: size, height: size }}>
+      <StakynLogo size={size} />
     </span>
   )
 }
@@ -74,7 +60,7 @@ function Sidebar() {
     <aside className="hidden w-[190px] shrink-0 flex-col border-r border-ink/10 bg-cream-alt p-4 md:flex" aria-hidden>
       <div className="flex items-center gap-2 px-1">
         <Avatar size={22} />
-        <span className="font-display text-sm font-semibold tracking-tight text-ink">PP</span>
+        <span className="font-display text-sm font-semibold tracking-tight text-ink">Stakyn</span>
       </div>
       <div className="mt-4 rounded-lg bg-ink/5 px-3 py-2 text-xs text-muted">+ New conversation</div>
       <SideLabel>Orgs</SideLabel>
@@ -121,7 +107,7 @@ export function AgentWorkspace({ compact = false }: { compact?: boolean }) {
     <div
       ref={root}
       role="img"
-      aria-label="Illustrative agent workspace: PP, a Salesforce dev copilot, takes a support ticket, finds the cause in the org, drafts a fix, waits for a person to approve it, then deploys and updates the ticket."
+      aria-label="Illustrative agent workspace: Stakyn, a Salesforce dev copilot, takes a support ticket, finds the cause in the org, drafts a fix, waits for a person to approve it, then deploys and updates the ticket."
       className="overflow-hidden rounded-2xl border border-ink/10 bg-surface shadow-xl shadow-ink/5"
     >
       {/* top bar */}
@@ -134,7 +120,7 @@ export function AgentWorkspace({ compact = false }: { compact?: boolean }) {
           </span>
           <span className="ml-2">Sandbox</span>
           <span>/</span>
-          <span className="font-medium text-ink">PP</span>
+          <span className="font-medium text-ink">Stakyn</span>
         </div>
         <span className="rounded-md bg-ink/5 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider">Sample</span>
       </div>
@@ -147,7 +133,7 @@ export function AgentWorkspace({ compact = false }: { compact?: boolean }) {
           <div className="flex items-center gap-3 border-b border-ink/10 px-4 py-3">
             <Avatar />
             <div className="leading-tight">
-              <div className="text-sm font-semibold text-ink">PP</div>
+              <div className="text-sm font-semibold text-ink">Stakyn</div>
               <div className="text-[11px] text-muted">Salesforce dev copilot</div>
             </div>
           </div>
@@ -228,7 +214,7 @@ export function AgentWorkspace({ compact = false }: { compact?: boolean }) {
 
           {/* composer */}
           <div className="flex items-center gap-3 border-t border-ink/10 px-4 py-3" aria-hidden>
-            <span className="flex-1 text-xs text-muted">Message PP…</span>
+            <span className="flex-1 text-xs text-muted">Message Stakyn…</span>
             <span className="flex h-7 w-7 items-center justify-center rounded-full bg-teal-600 text-white">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M12 19V5M5 12l7-7 7 7" />

@@ -49,7 +49,7 @@ export function PipelinePage() {
 
   return (
     <>
-      <section className="mx-auto w-full max-w-6xl px-6 pb-10 pt-28 sm:px-10 sm:pt-36">
+      <section className="mx-auto w-full max-w-6xl px-6 pb-10 pt-36 sm:px-10 sm:pt-36">
         <Link to="/" className="inline-flex items-center gap-1.5 text-sm font-medium text-muted transition-colors hover:text-amber-text">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
             <path d="M19 12H5M11 6l-6 6 6 6" />

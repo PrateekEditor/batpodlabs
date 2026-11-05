@@ -4,12 +4,12 @@ import { StakynLogo } from './StakynLogo'
 import { navigate, setNavigateGuard, usePath } from '../lib/router'
 
 /**
- * PP — a floating Salesforce dev copilot, bottom-right on every page, styled
+ * Stakyn — a floating Salesforce dev copilot, bottom-right on every page, styled
  * like the demo window. Type a ticket (or pick one) and it plays a scripted
  * debug → fix → review → deploy run. It is a DEMO: nothing here calls a model
  * or touches an org; the point is to show what the real thing would do.
  *
- * PP is also the site's loader: on first load it boots in the middle of the
+ * Stakyn is also the site's loader: on first load it boots in the middle of the
  * screen and then floats down to the corner; on every page change it flies to
  * the middle, the page swaps underneath, and it docks again, ready to chat.
  */
@@ -108,7 +108,7 @@ type Phase = 'idle' | 'playing' | 'review'
 const GREETING: Msg = {
   id: 0,
   kind: 'agent',
-  text: 'Hi, I’m PP, a Salesforce dev copilot. Describe a ticket, or pick one below, and I’ll show how I’d debug and fix it.',
+  text: 'Hi, I’m Stakyn, a Salesforce dev copilot. Describe a ticket, or pick one below, and I’ll show how I’d debug and fix it.',
 }
 
 export function openBot() {
@@ -119,7 +119,7 @@ type Mode = 'boot' | 'idle' | 'cover'
 const BOOT_MIN = 1100
 const BOOT_MAX = 4000
 const FLY_OUT = 350 // time for the cover to settle before the page swaps
-const FLY_BACK = 600 // time for PP to dock again after the swap
+const FLY_BACK = 600 // time for Stakyn to dock again after the swap
 
 const margin = () => (window.innerWidth >= 640 ? 24 : 16)
 /** Offset that moves the docked orb to the centre of the viewport. */
@@ -204,14 +204,6 @@ export function BotWidget() {
     const ready = Promise.all([
       document.readyState === 'complete' ? Promise.resolve() : new Promise<void>((r) => window.addEventListener('load', () => r(), { once: true })),
       document.fonts?.ready ?? Promise.resolve(),
-      ...['/mascots/prateek-directions.webp', '/mascots/prateek-reactions.webp'].map(
-        (src) =>
-          new Promise<void>((r) => {
-            const img = new Image()
-            img.onload = img.onerror = () => r()
-            img.src = src
-          }),
-      ),
     ])
     ready.then(() => {
       const wait = Math.max(0, BOOT_MIN - (Date.now() - started))
@@ -263,7 +255,7 @@ export function BotWidget() {
     })
   }, [path, prefersReduce])
 
-  // a one-time nudge after PP lands, for visitors who haven't found it
+  // a one-time nudge after Stakyn lands, for visitors who haven't found it
   useEffect(() => {
     if (mode !== 'idle' || hinted.current) return
     hinted.current = true
@@ -345,13 +337,13 @@ export function BotWidget() {
 
   return (
     <>
-      {/* loading cover: sits under PP while it boots or while the page swaps */}
+      {/* loading cover: sits under Stakyn while it boots or while the page swaps */}
       <div
         aria-hidden
         className={`fixed inset-0 z-[60] bg-cream ${mode === 'boot' ? 'transition-opacity duration-500' : 'transition-opacity duration-200'} ${away ? 'opacity-100' : 'pointer-events-none opacity-0'} ${instant ? '!transition-none' : ''}`}
       >
         <p className="absolute left-0 right-0 text-center text-sm font-medium tracking-wide text-muted" style={{ top: 'calc(50% + 86px)' }}>
-          {mode === 'boot' ? 'Booting PP…' : 'Loading…'}
+          {mode === 'boot' ? 'Booting Stakyn…' : 'Loading…'}
         </p>
       </div>
       <span className="sr-only" role="status">{mode === 'boot' ? 'Loading the site' : ''}</span>
@@ -360,13 +352,13 @@ export function BotWidget() {
       {open && !away && (
         <div
           role="dialog"
-          aria-label="PP, Salesforce dev copilot (demo chat)"
+          aria-label="Stakyn, Salesforce dev copilot (demo chat)"
           className="flex h-[min(560px,calc(100dvh-7.5rem))] w-[min(380px,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-ink/10 bg-surface shadow-2xl shadow-ink/20 msg-in"
         >
           <div className="flex items-center gap-3 border-b border-ink/10 px-4 py-3">
             <Avatar />
             <div className="min-w-0 flex-1 leading-tight">
-              <div className="text-sm font-semibold text-ink">PP</div>
+              <div className="text-sm font-semibold text-ink">Stakyn</div>
               <div className="truncate text-[11px] text-muted">Salesforce dev copilot · demo</div>
             </div>
             {started && (
@@ -535,7 +527,7 @@ export function BotWidget() {
           className={`hidden max-w-[220px] rounded-2xl rounded-br-md border border-ink/10 bg-surface px-3.5 py-2 text-xs font-medium text-ink shadow-lg shadow-ink/10 transition-all duration-300 sm:block ${hint && !open && !away ? 'translate-x-0 opacity-100' : 'pointer-events-none translate-x-2 opacity-0'}`}
           aria-hidden={!hint}
         >
-          Hi, I’m PP. Give me a Salesforce ticket to fix.
+          Hi, I’m Stakyn. Give me a Salesforce ticket to fix.
         </div>
 
         <div
@@ -551,7 +543,7 @@ export function BotWidget() {
                 type="button"
                 disabled={away}
                 aria-expanded={open}
-                aria-label={open ? 'Close the PP demo chat' : 'Open the PP demo chat'}
+                aria-label={open ? 'Close the Stakyn demo chat' : 'Open the Stakyn demo chat'}
                 onClick={() => setOpen((v) => !v)}
                 className="block h-14 w-14 overflow-hidden rounded-full shadow-xl shadow-ink/25 transition-transform duration-150 hover:scale-105 active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2 motion-reduce:transition-none"
               >
