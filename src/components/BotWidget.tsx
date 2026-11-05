@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type FormEvent, type KeyboardEvent } from 'react'
 import { Avatar, Check, Spinner } from './AgentWorkspace'
-import { Mascot } from './PageMascot'
+import { StakynLogo } from './StakynLogo'
 import { navigate, setNavigateGuard, usePath } from '../lib/router'
 
 /**
@@ -547,21 +547,16 @@ export function BotWidget() {
         >
           <div className={away || open ? '' : 'bot-float'}>
             <div className="relative h-14 w-14">
-              <div className="h-14 w-14 overflow-hidden rounded-full bg-surface shadow-xl shadow-ink/25 ring-2 ring-amber">
-                <div style={{ marginLeft: -5, marginTop: 1 }}>
-                  <Mascot
-                    directions="/mascots/prateek-directions.webp"
-                    reactions="/mascots/prateek-reactions.webp"
-                    size={66}
-                    label="PP"
-                    scan={away}
-                    disabled={away}
-                    expanded={open}
-                    ariaLabel={open ? 'Close the PP demo chat' : 'Open the PP demo chat'}
-                    onPress={() => setOpen((v) => !v)}
-                  />
-                </div>
-              </div>
+              <button
+                type="button"
+                disabled={away}
+                aria-expanded={open}
+                aria-label={open ? 'Close the PP demo chat' : 'Open the PP demo chat'}
+                onClick={() => setOpen((v) => !v)}
+                className="block h-14 w-14 overflow-hidden rounded-full shadow-xl shadow-ink/25 transition-transform duration-150 hover:scale-105 active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber focus-visible:ring-offset-2 motion-reduce:transition-none"
+              >
+                <StakynLogo size={56} />
+              </button>
               {open && !away && (
                 <span className="pointer-events-none absolute -left-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-navy text-on-navy ring-2 ring-surface" aria-hidden>
                   <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.4" strokeLinecap="round">

@@ -286,8 +286,23 @@ svg [role="button"]:focus-visible {
 .bot-squish {
   animation: bot-squish 0.45s ease-out;
 }
+/* Stakyn logo: a slow float, and the eyes blink now and then */
+@keyframes stakyn-float {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50% { transform: translateY(-10px) rotate(3deg); }
+}
+.stakyn-float {
+  animation: stakyn-float 4s ease-in-out infinite;
+}
+@keyframes stakyn-blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.1); }
+}
+.stakyn-blink {
+  animation: stakyn-blink 4.2s ease-in-out infinite;
+}
 @media (prefers-reduced-motion: reduce) {
-  .bot-float, .bot-squish { animation: none; }
+  .bot-float, .bot-squish, .stakyn-float, .stakyn-blink { animation: none; }
 }
 
 /* Agent-workspace mock: messages slide in, typing dots bounce */
